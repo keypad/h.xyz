@@ -14,6 +14,7 @@ type State = {
 	mobile: boolean
 	emails: Email[]
 	markRead: (id: number) => void
+	toggleRead: (id: number) => void
 	toggleStar: (id: number) => void
 	send: (to: string, subject: string, body: string) => void
 	trash: (id: number) => void
@@ -46,6 +47,9 @@ export function Provider({ children }: { children: ReactNode }) {
 
 	const markRead = (id: number) =>
 		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, unread: false } : e)))
+
+	const toggleRead = (id: number) =>
+		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, unread: !e.unread } : e)))
 
 	const toggleStar = (id: number) =>
 		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, starred: !e.starred } : e)))
@@ -138,6 +142,7 @@ export function Provider({ children }: { children: ReactNode }) {
 				mobile,
 				emails,
 				markRead,
+				toggleRead,
 				toggleStar,
 				send,
 				trash,

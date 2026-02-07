@@ -11,6 +11,7 @@ const shortcuts = [
 	["r", "reply"],
 	["f", "forward"],
 	["s", "star"],
+	["u", "read/unread"],
 	["d", "trash"],
 	["?", "this help"],
 ]

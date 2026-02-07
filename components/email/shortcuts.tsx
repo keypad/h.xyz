@@ -5,7 +5,7 @@ import { useEmail } from "@/components/email/context"
 
 export function useShortcuts() {
 	const {
-		selected, setSelected, setComposing, composing, navigate, filtered, mobile, toggleStar, trash, reply, forward,
+		selected, setSelected, setComposing, composing, navigate, filtered, mobile, toggleStar, toggleRead, trash, reply, forward,
 	} = useEmail()
 
 	useEffect(() => {
@@ -55,6 +55,9 @@ export function useShortcuts() {
 						forward(selected)
 					}
 					break
+				case "u":
+					if (selected) toggleRead(selected)
+					break
 				case "d":
 					if (selected) trash(selected)
 					break
@@ -63,5 +66,5 @@ export function useShortcuts() {
 
 		window.addEventListener("keydown", handler)
 		return () => window.removeEventListener("keydown", handler)
-	}, [selected, composing, navigate, setSelected, setComposing, filtered, mobile, toggleStar, trash, reply, forward])
+	}, [selected, composing, navigate, setSelected, setComposing, filtered, mobile, toggleStar, toggleRead, trash, reply, forward])
 }
