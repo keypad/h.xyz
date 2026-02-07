@@ -6,7 +6,7 @@ import Empty from "@/components/email/empty"
 import { LockIcon } from "@/components/email/icons"
 
 export default function List() {
-	const { filtered, selected, setSelected, folder } = useEmail()
+	const { filtered, selected, setSelected, markRead, folder } = useEmail()
 	const refs = useRef<Map<number, HTMLButtonElement>>(new Map())
 
 	useEffect(() => {
@@ -27,7 +27,10 @@ export default function List() {
 						if (el) refs.current.set(email.id, el)
 					}}
 					type="button"
-					onClick={() => setSelected(email.id)}
+					onClick={() => {
+						setSelected(email.id)
+						if (email.unread) markRead(email.id)
+					}}
 					className={`group w-full px-5 py-4 text-left transition-colors duration-150 ${
 						selected === email.id ? "bg-white/[0.04]" : "hover:bg-white/[0.02]"
 					}`}

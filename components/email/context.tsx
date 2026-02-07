@@ -10,6 +10,8 @@ type State = {
 	search: string
 	mobile: boolean
 	emails: Email[]
+	markRead: (id: number) => void
+	toggleStar: (id: number) => void
 	setFolder: (id: string) => void
 	setSelected: (id: number | null) => void
 	setComposing: (v: boolean) => void
@@ -27,10 +29,17 @@ export function Provider({ children }: { children: ReactNode }) {
 	const [composing, setComposing] = useState(false)
 	const [search, setSearch] = useState("")
 	const [mobile, setMobile] = useState(false)
+	const [emails, setEmails] = useState(initial)
+
+	const markRead = (id: number) =>
+		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, unread: false } : e)))
+
+	const toggleStar = (id: number) =>
+		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, starred: !e.starred } : e)))
 
 	const filtered = useMemo(
 		() =>
-			initial.filter((e) => {
+			emails.filter((e) => {
 				if (e.folder !== folder) return false
 				if (!search) return true
 				const q = search.toLowerCase()
@@ -40,7 +49,7 @@ export function Provider({ children }: { children: ReactNode }) {
 					e.preview.toLowerCase().includes(q)
 				)
 			}),
-		[folder, search],
+		[emails, folder, search],
 	)
 
 	const navigate = (direction: "up" | "down") => {
@@ -63,7 +72,9 @@ export function Provider({ children }: { children: ReactNode }) {
 				composing,
 				search,
 				mobile,
-				emails: initial,
+				emails,
+				markRead,
+				toggleStar,
 				setFolder,
 				setSelected,
 				setComposing,
