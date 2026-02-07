@@ -18,6 +18,11 @@ export function classify(error: unknown): string {
 	if (msg.includes("insufficient") || msg.includes("balance")) return "insufficient balance"
 	if (msg.includes("slippage")) return "slippage exceeded"
 	if (msg.includes("cross-chain")) return "cross-chain only"
+	if (msg.includes("liquidity") || msg.includes("no pool")) return "no liquidity"
+	if (msg.includes("amount") && msg.includes("small")) return "amount too small"
+	if (msg.includes("amount") && (msg.includes("large") || msg.includes("max"))) return "amount too large"
+	if (msg.includes("timeout")) return "timeout"
+	if (msg.includes("network") || msg.includes("fetch")) return "network error"
 	return "no route"
 }
 
