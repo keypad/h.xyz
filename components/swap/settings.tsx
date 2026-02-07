@@ -58,6 +58,7 @@ export default function Settings({
 		<div ref={ref} className="relative">
 			<button
 				type="button"
+				aria-label="settings"
 				onClick={() => setOpen(!open)}
 				className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors hover:text-white/50 ${
 				slippage !== DEFAULT ? "text-[#EC4612]/60" : "text-white/30"

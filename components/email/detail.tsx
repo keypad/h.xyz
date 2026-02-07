@@ -21,6 +21,7 @@ export default function Detail() {
 				<div className="flex items-center gap-3">
 					<button
 						type="button"
+						aria-label="back"
 						onClick={() => setSelected(null)}
 						className="flex h-7 w-7 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/50 md:hidden"
 					>

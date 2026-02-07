@@ -121,6 +121,7 @@ export function FlipButton({ flipped, onFlip }: { flipped: boolean; onFlip: () =
 		<div className="relative my-1 flex justify-center">
 			<button
 				type="button"
+				aria-label="flip"
 				onClick={onFlip}
 				className="absolute -top-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.06] bg-[#1e1c1a] text-white/30 transition-all duration-200 hover:text-white/50 active:scale-95"
 			>

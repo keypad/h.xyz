@@ -10,6 +10,7 @@ export default function Toolbar() {
 		<div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3">
 			<button
 				type="button"
+				aria-label="menu"
 				onClick={() => setMobile(true)}
 				className="flex h-8 w-8 items-center justify-center rounded-lg text-white/40 transition-colors hover:bg-white/[0.06] hover:text-white/60 md:hidden"
 			>
@@ -53,6 +54,7 @@ export default function Toolbar() {
 			</div>
 			<button
 				type="button"
+				aria-label="compose"
 				onClick={() => setComposing(true)}
 				className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f996ee] text-white transition-opacity hover:opacity-90"
 			>

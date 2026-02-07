@@ -97,6 +97,7 @@ export default function Modal({
 					</div>
 					<button
 						type="button"
+						aria-label="close"
 						onClick={onClose}
 						className="flex h-11 w-11 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/60 md:h-8 md:w-8"
 					>

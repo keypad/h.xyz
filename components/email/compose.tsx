@@ -58,6 +58,7 @@ export default function Compose() {
 				</span>
 					<button
 						type="button"
+						aria-label="close"
 						onClick={close}
 						className="flex h-7 w-7 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/50"
 					>
