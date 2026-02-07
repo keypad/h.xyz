@@ -38,6 +38,7 @@ export default function Detail() {
 					</div>
 					<button
 						type="button"
+						aria-label="star"
 						onClick={() => toggleStar(active.id)}
 						className="shrink-0 transition-colors"
 					>

@@ -13,6 +13,7 @@ export default function Refresh({ onRefresh }: { onRefresh: () => void }) {
 	return (
 		<button
 			type="button"
+			aria-label="refresh"
 			onClick={onRefresh}
 			className="flex h-5 w-5 items-center justify-center rounded text-white/30 transition-colors hover:text-white/50"
 		>
