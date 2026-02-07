@@ -28,6 +28,15 @@ export type Quote = {
 	fee?: string
 	route?: string
 	estimatedGas?: string
+	_raw?: unknown
+}
+
+export function toSmallest(amount: string, decimals: number): string {
+	const n = Number.parseFloat(amount)
+	if (decimals <= 8) return Math.floor(n * 10 ** decimals).toString()
+	return BigInt(
+		Math.floor(n * 10 ** Math.min(decimals, 8)) * 10 ** Math.max(0, decimals - 8),
+	).toString()
 }
 
 export type SwapResult = {
