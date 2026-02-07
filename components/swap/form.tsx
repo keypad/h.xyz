@@ -7,8 +7,9 @@ import ConnectButton from "../wallet/connect"
 import { useWalletContext } from "../wallet/context"
 import Details from "./details"
 import { classify, withRetry, withTimeout } from "./errors"
-import { fmt, modules } from "./modules"
+import { modules } from "./modules"
 import { FlipButton, LiveDot, PayPanel, ReceivePanel, SwapButton } from "./panels"
+import Rate from "./rate"
 import Refresh from "./refresh"
 import Settings, { useSlippage } from "./settings"
 import Status from "./status"
@@ -134,9 +135,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 					{!loading && quote && (
 						<>
 							<Refresh key={refreshKey.current} onRefresh={fetchQuote} />
-							<span className="font-mono text-[11px] text-white/30">
-								1 {input.symbol} = {fmt(quote.rate)} {output.symbol}
-							</span>
+							<Rate rate={quote.rate} input={input} output={output} />
 						</>
 					)}
 					<Settings slippage={slippage} onChange={setSlippage} />
