@@ -1,4 +1,5 @@
-import type { ProviderModule, Quote, SwapToken } from "./types"
+import type { ProviderModule, SwapToken } from "./types"
+import { toSmallest } from "./types"
 
 const ROUTER = "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD"
 
@@ -49,13 +50,6 @@ const TOKENS: SwapToken[] = [
 
 const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 const QUOTER = "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6"
-
-function toSmallest(amount: string, decimals: number): string {
-	const n = Number.parseFloat(amount)
-	return BigInt(
-		Math.floor(n * 10 ** Math.min(decimals, 8)) * 10 ** Math.max(0, decimals - 8),
-	).toString()
-}
 
 function tokenAddress(token: SwapToken): string {
 	if (token.symbol === "ETH") return WETH
@@ -123,14 +117,14 @@ export const uniswap: ProviderModule = {
 				route: "uniswap v3",
 				estimatedGas: "150000",
 				_raw: { tokenIn, tokenOut, sellAmount, fee: 3000 },
-			} as Quote & { _raw: any }
+			}
 		} catch {
 			return null
 		}
 	},
 
 	swap: async ({ quote, sender, signer }) => {
-		const raw = (quote as any)._raw
+		const raw = quote._raw as Record<string, any> | undefined
 		if (!raw || !signer) return { status: "error", message: "missing data" }
 
 		const { encodeFunctionData, parseAbi } = await import("viem")
