@@ -6,11 +6,6 @@ import Panel from "@/components/swap/panel"
 export const metadata: Metadata = {
 	title: "swap",
 	description: "swap tokens across 5 providers. mev protection. zero logging. zero tracking.",
-	openGraph: {
-		title: "swap | h.xyz",
-		description: "swap tokens across 5 providers. mev protection. zero logging.",
-		images: [{ url: "/og.png", width: 1200, height: 630 }],
-	},
 }
 
 export default function SwapPage() {
