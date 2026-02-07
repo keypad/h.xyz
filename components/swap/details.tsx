@@ -1,8 +1,5 @@
 import type { Quote, SwapToken } from "../providers/types"
-
-function fmt(n: number) {
-	return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-}
+import { fmt } from "./modules"
 
 export default function Details({
 	quote,
