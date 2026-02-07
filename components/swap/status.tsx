@@ -1,6 +1,25 @@
 "use client"
 
+import { useState } from "react"
 import type { SwapResult } from "../providers/types"
+
+function Copy({ text }: { text: string }) {
+	const [copied, setCopied] = useState(false)
+	const copy = () => {
+		navigator.clipboard.writeText(text)
+		setCopied(true)
+		setTimeout(() => setCopied(false), 1500)
+	}
+	return (
+		<button
+			type="button"
+			onClick={copy}
+			className="text-[11px] text-white/20 transition-colors hover:text-white/40"
+		>
+			{copied ? "copied" : "copy"}
+		</button>
+	)
+}
 
 export default function Status({
 	result,
@@ -43,9 +62,12 @@ export default function Status({
 					</div>
 					<span className="mb-2 text-sm text-white/80">complete</span>
 					{result.hash && (
-						<span className="mb-4 break-all font-mono text-[11px] text-white/30">
-							{result.hash.slice(0, 12)}...{result.hash.slice(-8)}
-						</span>
+						<div className="mb-4 flex items-center gap-2">
+							<span className="break-all font-mono text-[11px] text-white/30">
+								{result.hash.slice(0, 12)}...{result.hash.slice(-8)}
+							</span>
+							<Copy text={result.hash} />
+						</div>
 					)}
 					{result.explorer && (
 						<a
@@ -58,9 +80,12 @@ export default function Status({
 						</a>
 					)}
 					{result.message && (
-						<span className="mt-2 text-center font-mono text-[11px] text-white/40">
-							{result.message}
-						</span>
+						<div className="mt-2 flex flex-col items-center gap-1">
+							<span className="text-center font-mono text-[11px] text-white/40">
+								{result.message}
+							</span>
+							<Copy text={result.message} />
+						</div>
 					)}
 				</>
 			)}
