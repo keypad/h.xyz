@@ -3,8 +3,8 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import Ghost from "@/components/ghost"
 import { LockIcon } from "@/components/email/icons"
+import Ghost from "@/components/ghost"
 
 export default function LoginPage() {
 	const router = useRouter()
@@ -28,8 +28,8 @@ export default function LoginPage() {
 				</div>
 
 				<form onSubmit={submit} className="flex flex-col gap-3">
-					<div className="rounded-xl bg-white/[0.04] px-4 py-3">
-						<label className="text-[11px] text-white/20">email</label>
+					<label className="rounded-xl bg-white/[0.04] px-4 py-3">
+						<span className="text-[11px] text-white/20">email</span>
 						<div className="flex items-center gap-2">
 							<input
 								type="text"
@@ -40,17 +40,17 @@ export default function LoginPage() {
 							/>
 							<span className="text-[15px] text-white/20">@h.xyz</span>
 						</div>
-					</div>
+					</label>
 
-					<div className="rounded-xl bg-white/[0.04] px-4 py-3">
-						<label className="text-[11px] text-white/20">password</label>
+					<label className="rounded-xl bg-white/[0.04] px-4 py-3">
+						<span className="text-[11px] text-white/20">password</span>
 						<input
 							type="password"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							className="mt-0.5 w-full bg-transparent text-[15px] text-white outline-none placeholder:text-white/15"
 						/>
-					</div>
+					</label>
 
 					<button
 						type="submit"
@@ -61,7 +61,10 @@ export default function LoginPage() {
 				</form>
 
 				<div className="mt-6 flex flex-col items-center gap-4">
-					<Link href="/email/register" className="text-sm text-white/25 transition-colors hover:text-white/40">
+					<Link
+						href="/email/register"
+						className="text-sm text-white/25 transition-colors hover:text-white/40"
+					>
 						create account
 					</Link>
 					<div className="flex items-center gap-1.5 text-[11px] text-white/15">

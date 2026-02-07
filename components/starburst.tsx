@@ -31,7 +31,7 @@ export default function Starburst({ className }: { className?: string }) {
 			strokeLinecap="round"
 		>
 			<circle cx={center} cy={center} r="2" fill="currentColor" stroke="none" />
-			{rays.map((ray, i) => {
+			{rays.map((ray) => {
 				const rad = (ray.a * Math.PI) / 180
 				const r = radius * ray.l
 				const ex = center + Math.cos(rad) * r
@@ -40,7 +40,7 @@ export default function Starburst({ className }: { className?: string }) {
 				const py = Math.cos(rad)
 
 				return (
-					<g key={i}>
+					<g key={ray.a}>
 						<line x1={center} y1={center} x2={ex} y2={ey} />
 						{ray.t.map((p, j) => {
 							const mx = center + Math.cos(rad) * r * p
