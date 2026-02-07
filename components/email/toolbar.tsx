@@ -18,6 +18,7 @@ export default function Toolbar() {
 			<div className="flex flex-1 items-center gap-2 rounded-xl bg-white/[0.04] px-3 py-2">
 				<SearchIcon className="shrink-0 text-white/20" />
 				<input
+					data-search
 					type="text"
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}

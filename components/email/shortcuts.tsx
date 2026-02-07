@@ -32,6 +32,10 @@ export function useShortcuts() {
 				case "Escape":
 					if (mobile || selected) setSelected(null)
 					break
+			case "/":
+					e.preventDefault()
+					document.querySelector<HTMLInputElement>("[data-search]")?.focus()
+					break
 				case "c":
 					e.preventDefault()
 					setComposing(true)
