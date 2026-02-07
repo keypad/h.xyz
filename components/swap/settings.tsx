@@ -42,6 +42,7 @@ export default function Settings({
 	const select = (v: number) => {
 		setCustom("")
 		onChange(v)
+		close()
 	}
 
 	const handleCustom = (val: string) => {
