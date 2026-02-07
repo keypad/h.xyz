@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 				addressTo: body.addressTo,
 				anonymous: body.anonymous ?? true,
 				ip: "0.0.0.0",
-				userAgent: req.headers.get("user-agent") || "",
+				userAgent: "Mozilla/5.0",
 				timezone: "UTC",
 			}),
 			cache: "no-store",
