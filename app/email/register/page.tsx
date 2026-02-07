@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { LockIcon } from "@/components/email/icons"
 import Ghost from "@/components/ghost"
 
@@ -11,6 +11,11 @@ export default function RegisterPage() {
 	const [handle, setHandle] = useState("")
 	const [password, setPassword] = useState("")
 	const [confirm, setConfirm] = useState("")
+	const ref = useRef<HTMLInputElement>(null)
+
+	useEffect(() => ref.current?.focus(), [])
+
+	const valid = handle && password && password === confirm
 
 	const submit = (e: React.FormEvent) => {
 		e.preventDefault()
@@ -33,6 +38,7 @@ export default function RegisterPage() {
 						<span className="text-[11px] text-white/20">address</span>
 						<div className="flex items-center gap-2">
 							<input
+								ref={ref}
 								type="text"
 								value={handle}
 								onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ""))}
@@ -65,7 +71,8 @@ export default function RegisterPage() {
 
 					<button
 						type="submit"
-						className="mt-2 w-full rounded-xl bg-[#f996ee] py-3.5 text-sm font-medium text-[#1a1816] transition-opacity hover:opacity-90"
+						disabled={!valid}
+						className="mt-2 w-full rounded-xl bg-[#f996ee] py-3.5 text-sm font-medium text-[#1a1816] transition-opacity hover:opacity-90 disabled:opacity-30"
 					>
 						create account
 					</button>
