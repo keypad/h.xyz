@@ -125,7 +125,7 @@ export const debridge: ProviderModule = {
 		const smallAmount = toSmallest(amount, input.decimals)
 		if (smallAmount === "0") return null
 
-		if (srcChainId === dstChainId) return null
+		if (srcChainId === dstChainId) throw new Error("cross-chain only")
 
 		const params = new URLSearchParams({
 			srcChainId: srcChainId.toString(),

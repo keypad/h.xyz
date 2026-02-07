@@ -17,6 +17,7 @@ export function classify(error: unknown): string {
 	if (msg.includes("429") || msg.includes("rate")) return "rate limited"
 	if (msg.includes("insufficient") || msg.includes("balance")) return "insufficient balance"
 	if (msg.includes("slippage")) return "slippage exceeded"
+	if (msg.includes("cross-chain")) return "cross-chain only"
 	return "no route"
 }
 
