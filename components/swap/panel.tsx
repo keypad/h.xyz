@@ -12,19 +12,14 @@ function chainFor(id: string): ChainType {
 	return p?.chains[0] ?? "evm"
 }
 
-export default function Panel() {
-	const [active, setActive] = useState("jupiter")
+export default function Panel({ initial = "jupiter" }: { initial?: string }) {
+	const [active, setActive] = useState(initial)
 	const [chainId, setChainId] = useState(1)
 	const [, startTransition] = useTransition()
 	const chain = chainFor(active)
 	const chains = chainsFor(active)
 	const tabsRef = useRef<HTMLDivElement>(null)
 	const [indicator, setIndicator] = useState({ left: 0, width: 0 })
-
-	useEffect(() => {
-		const hash = window.location.hash.slice(1)
-		if (hash && providers.some((p) => p.id === hash)) setActive(hash)
-	}, [])
 
 	useLayoutEffect(() => {
 		const container = tabsRef.current
@@ -35,7 +30,7 @@ export default function Panel() {
 	}, [active])
 
 	useEffect(() => {
-		window.location.hash = active
+		window.history.replaceState(null, "", `/swap/${active}`)
 	}, [active])
 
 	useEffect(() => {

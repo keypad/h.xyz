@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
+import { providers } from "@/components/providers/registry"
 import Panel from "@/components/swap/panel"
 
 export const metadata: Metadata = {
@@ -8,7 +9,19 @@ export const metadata: Metadata = {
 	description: "swap tokens across 5 providers. mev protection. zero logging. zero tracking.",
 }
 
-export default function SwapPage() {
+export function generateStaticParams() {
+	return [{ provider: [] }, ...providers.map((p) => ({ provider: [p.id] }))]
+}
+
+export default async function SwapPage({
+	params,
+}: {
+	params: Promise<{ provider?: string[] }>
+}) {
+	const { provider } = await params
+	const id = provider?.[0]
+	const initial = providers.some((p) => p.id === id) ? id! : "jupiter"
+
 	return (
 		<>
 			<Header />
@@ -17,7 +30,7 @@ export default function SwapPage() {
 				<p className="mt-2 text-sm text-white/40">choose your route. zero logging.</p>
 
 				<div className="mt-6 sm:mt-8">
-					<Panel />
+					<Panel initial={initial} />
 				</div>
 
 				<div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-[11px] text-white/20 sm:mt-8 sm:gap-6">
