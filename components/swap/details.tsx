@@ -28,7 +28,11 @@ export default function Details({
 			</Row>
 			{quote.route && <Row label="route">{quote.route}</Row>}
 			{quote.fee && <Row label="fees">{quote.fee}</Row>}
-			<Row label="slippage">{slippage}%</Row>
+			<Row label="slippage">
+				<span className={slippage > 3 ? "text-[#EC4612]" : ""}>
+					{slippage}%{slippage > 3 ? " (high)" : ""}
+				</span>
+			</Row>
 			<Row label="network">
 				<div className="flex items-center gap-1.5">
 					<span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
