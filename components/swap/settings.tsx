@@ -80,7 +80,10 @@ export default function Settings({
 			</button>
 
 			{open && (
-				<div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border border-white/[0.06] bg-[#1e1c1a] p-3 shadow-xl">
+				<div
+					className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border border-white/[0.06] bg-[#1e1c1a] p-3 shadow-xl"
+					style={{ animation: "slideup 150ms ease-out" }}
+				>
 					<span className="text-[11px] text-white/25">slippage</span>
 					<div className="mt-2 flex gap-1.5">
 						{PRESETS.map((v) => (
@@ -104,6 +107,7 @@ export default function Settings({
 							inputMode="decimal"
 							value={custom}
 							onChange={(e) => handleCustom(e.target.value)}
+							onKeyDown={(e) => e.key === "Enter" && close()}
 							placeholder="custom"
 							className={`w-full rounded-lg border px-2.5 py-1.5 text-xs text-white outline-none placeholder:text-white/20 ${
 								active
