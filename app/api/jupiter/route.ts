@@ -18,7 +18,9 @@ export async function GET(req: Request) {
 
 	if (action === "tokens") {
 		const upstream = await fetch(TOKENS_URL, { cache: "no-store" })
-		if (!upstream.ok) return strip(NextResponse.json([], { status: upstream.status }))
+		if (!upstream.ok || !upstream.headers.get("content-type")?.includes("json")) {
+			return strip(NextResponse.json([], { status: upstream.status || 502 }))
+		}
 		const data = await upstream.json()
 		return strip(NextResponse.json(data.slice(0, 100)))
 	}
@@ -36,6 +38,10 @@ export async function GET(req: Request) {
 		cache: "no-store",
 	})
 
+	if (!upstream.ok || !upstream.headers.get("content-type")?.includes("json")) {
+		return strip(NextResponse.json({ error: "upstream" }, { status: upstream.status || 502 }))
+	}
+
 	const data = await upstream.json()
 	return strip(NextResponse.json(data, { status: upstream.status }))
 }
@@ -52,6 +58,10 @@ export async function POST(req: Request) {
 		body: JSON.stringify(body),
 		cache: "no-store",
 	})
+
+	if (!upstream.ok || !upstream.headers.get("content-type")?.includes("json")) {
+		return strip(NextResponse.json({ error: "upstream" }, { status: upstream.status || 502 }))
+	}
 
 	const data = await upstream.json()
 	return strip(NextResponse.json(data, { status: upstream.status }))
