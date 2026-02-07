@@ -6,9 +6,10 @@ import type { Quote, SwapResult, SwapToken } from "../providers/types"
 import ConnectButton from "../wallet/connect"
 import { useWalletContext } from "../wallet/context"
 import Details from "./details"
+import { classify, withTimeout } from "./errors"
 import { fmt, modules } from "./modules"
+import { FlipButton, PayPanel, ReceivePanel } from "./panels"
 import Refresh from "./refresh"
-import Selector from "./selector"
 import Settings, { useSlippage } from "./settings"
 import Status from "./status"
 
@@ -26,6 +27,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	const timer = useRef<ReturnType<typeof setTimeout>>(null)
 	const refreshKey = useRef(0)
 	const mounted = useRef(false)
+	const abort = useRef<AbortController | null>(null)
 	const { connected, address, signer, chain } = useWalletContext()
 	const { slippage, setSlippage } = useSlippage()
 
@@ -37,29 +39,38 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	}, [tokenList])
 
 	const fetchQuote = useCallback(async () => {
+		abort.current?.abort()
+		abort.current = new AbortController()
+		const signal = abort.current.signal
 		setError(null)
 		const n = Number.parseFloat(amount)
 		if (!n || n <= 0) {
 			setQuote(null)
+			setError(!amount || amount === "0" ? "enter an amount" : null)
 			return
 		}
 		if (input.address === output.address) {
-			setError("select different tokens")
+			setError("same token")
 			setQuote(null)
 			return
 		}
 		setLoading(true)
 		try {
-			const q = await mod.quote({ input, output, amount, sender: address ?? undefined, slippage })
-			if (q) {
-				setQuote(q)
-			} else {
+			const q = await withTimeout(
+				mod.quote({ input, output, amount, sender: address ?? undefined, slippage }),
+				10000,
+				signal,
+			)
+			if (signal.aborted) return
+			if (q) setQuote(q)
+			else {
 				setQuote(null)
 				setError("no route found")
 			}
-		} catch {
+		} catch (e) {
+			if (signal.aborted && !(e instanceof DOMException && e.name === "AbortError")) return
 			setQuote(null)
-			setError("quote unavailable")
+			setError(classify(e))
 		}
 		setLoading(false)
 	}, [mod, input, output, amount, address, slippage])
@@ -84,11 +95,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		setInput(output)
 		setOutput(prev)
 		if (quote)
-			setAmount(
-				Number.parseFloat(quote.outputAmount)
-					.toFixed(6)
-					.replace(/\.?0+$/, ""),
-			)
+			setAmount(Number.parseFloat(quote.outputAmount).toFixed(6).replace(/\.?0+$/, ""))
 	}
 
 	const execute = async () => {
@@ -107,12 +114,18 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		}
 	}
 
+	const retry = () => {
+		refreshKey.current++
+		fetchQuote()
+	}
+
 	const prov = providers.find((p) => p.id === providerId)
+	const retryable = error === "rate limited" || error === "provider unavailable" || error === "slow response"
+	const buttonError = error && error !== "enter an amount"
 
 	return (
 		<div className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-4 md:p-5">
 			<Status result={result} onClose={() => setResult(null)} />
-
 			<div className="mb-3 flex items-center justify-between px-1">
 				<div className="flex items-center gap-2 text-[11px] text-white/20">
 					<span className="relative flex h-1.5 w-1.5">
@@ -134,86 +147,41 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 					<Settings slippage={slippage} onChange={setSlippage} />
 				</div>
 			</div>
-
-			<div className="rounded-xl bg-white/[0.03] p-4">
-				<span className="text-[11px] text-white/25">you pay</span>
-				<div className="mt-2 flex items-center justify-between gap-3">
-					<input
-						type="text"
-						inputMode="decimal"
-						value={amount}
-						onChange={(e) => {
-							setAmount(e.target.value.replace(/[^0-9.]/g, ""))
-							refreshKey.current++
-						}}
-						className="w-0 min-w-0 flex-1 bg-transparent text-2xl font-medium text-white outline-none placeholder:text-white/20 md:text-3xl"
-						placeholder="0"
-					/>
-					<Selector token={input} tokens={tokenList} onSelect={setInput} exclude={output.address} />
-				</div>
+			<PayPanel
+				amount={amount}
+				token={input}
+				tokens={tokenList}
+				exclude={output.address}
+				onAmount={(v) => { setAmount(v); refreshKey.current++ }}
+				onSelect={setInput}
+			/>
+			<FlipButton flipped={flipped} onFlip={flip} />
+			<ReceivePanel
+				quote={quote}
+				loading={loading}
+				error={error}
+				retryable={retryable}
+				token={output}
+				tokens={tokenList}
+				exclude={input.address}
+				onSelect={setOutput}
+				onRetry={retry}
+			/>
+			<div className={`overflow-hidden transition-all duration-200 ${quote ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}>
+				{quote && <Details quote={quote} input={input} slippage={slippage} chain={chain} color={prov?.color} />}
 			</div>
-
-			<div className="relative my-1 flex justify-center">
-				<button
-					type="button"
-					onClick={flip}
-					className="absolute -top-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.06] bg-[#1e1c1a] text-white/30 transition-all duration-200 hover:text-white/50"
-					style={{ transform: flipped ? "rotate(180deg)" : "rotate(0deg)" }}
-				>
-					<svg
-						aria-hidden="true"
-						width="16"
-						height="16"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2"
-					>
-						<path d="M12 5v14m0 0l-4-4m4 4l4-4" />
-					</svg>
-				</button>
-			</div>
-
-			<div className="rounded-xl bg-white/[0.03] p-4">
-				<span className="text-[11px] text-white/25">you receive</span>
-				<div className="mt-2 flex items-center justify-between gap-3">
-					<span
-						className={`text-2xl font-medium text-white transition-opacity duration-200 md:text-3xl ${loading ? "opacity-30" : ""}`}
-					>
-						{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "\u2014"}
-					</span>
-					<Selector
-						token={output}
-						tokens={tokenList}
-						onSelect={setOutput}
-						exclude={input.address}
-					/>
-				</div>
-				{error && <div className="mt-2 text-[12px] text-red-400/60">{error}</div>}
-			</div>
-
-			<div
-				className={`overflow-hidden transition-all duration-200 ${quote ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}
-			>
-				{quote && (
-					<Details
-						quote={quote}
-						input={input}
-						slippage={slippage}
-						chain={chain}
-						color={prov?.color}
-					/>
-				)}
-			</div>
-
 			{connected ? (
 				<button
 					type="button"
-					disabled={!quote}
+					disabled={!quote || !!buttonError}
 					onClick={execute}
-					className="mt-4 w-full rounded-xl bg-[#EC4612] py-3.5 text-sm font-medium text-white transition-all hover:brightness-110 disabled:opacity-30 disabled:hover:brightness-100 md:py-4"
+					className={`mt-4 w-full rounded-xl py-3.5 text-sm font-medium transition-all md:py-4 ${
+						buttonError
+							? "bg-white/[0.04] text-white/25"
+							: "bg-[#EC4612] text-white hover:brightness-110 disabled:opacity-30 disabled:hover:brightness-100"
+					}`}
 				>
-					swap
+					{buttonError || "swap"}
 				</button>
 			) : (
 				<ConnectButton />

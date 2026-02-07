@@ -1,0 +1,109 @@
+"use client"
+
+import type { SwapToken } from "../providers/types"
+import { fmt } from "./modules"
+import Selector from "./selector"
+
+export function PayPanel({
+	amount,
+	token,
+	tokens,
+	exclude,
+	onAmount,
+	onSelect,
+}: {
+	amount: string
+	token: SwapToken
+	tokens: SwapToken[]
+	exclude: string
+	onAmount: (v: string) => void
+	onSelect: (t: SwapToken) => void
+}) {
+	return (
+		<div className="rounded-xl bg-white/[0.03] p-4">
+			<span className="text-[11px] text-white/25">you pay</span>
+			<div className="mt-2 flex items-center justify-between gap-3">
+				<input
+					type="text"
+					inputMode="decimal"
+					value={amount}
+					onChange={(e) => onAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+					className="w-0 min-w-0 flex-1 bg-transparent text-2xl font-medium text-white outline-none placeholder:text-white/20 md:text-3xl"
+					placeholder="0"
+				/>
+				<Selector token={token} tokens={tokens} onSelect={onSelect} exclude={exclude} />
+			</div>
+		</div>
+	)
+}
+
+export function ReceivePanel({
+	quote,
+	loading,
+	error,
+	retryable,
+	token,
+	tokens,
+	exclude,
+	onSelect,
+	onRetry,
+}: {
+	quote: { outputAmount: string } | null
+	loading: boolean
+	error: string | null
+	retryable: boolean
+	token: SwapToken
+	tokens: SwapToken[]
+	exclude: string
+	onSelect: (t: SwapToken) => void
+	onRetry: () => void
+}) {
+	return (
+		<div className="rounded-xl bg-white/[0.03] p-4">
+			<span className="text-[11px] text-white/25">you receive</span>
+			<div className="mt-2 flex items-center justify-between gap-3">
+				<span
+					className={`text-2xl font-medium text-white transition-opacity duration-200 md:text-3xl ${loading ? "opacity-30" : ""}`}
+				>
+					{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "\u2014"}
+				</span>
+				<Selector token={token} tokens={tokens} onSelect={onSelect} exclude={exclude} />
+			</div>
+			{error && (
+				<div className="mt-2 flex items-center gap-2 text-[12px] text-red-400/60">
+					<span>{error}</span>
+					{retryable && (
+						<button type="button" onClick={onRetry} className="text-white/30 hover:text-white/50">
+							retry
+						</button>
+					)}
+				</div>
+			)}
+		</div>
+	)
+}
+
+export function FlipButton({ flipped, onFlip }: { flipped: boolean; onFlip: () => void }) {
+	return (
+		<div className="relative my-1 flex justify-center">
+			<button
+				type="button"
+				onClick={onFlip}
+				className="absolute -top-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.06] bg-[#1e1c1a] text-white/30 transition-all duration-200 hover:text-white/50"
+				style={{ transform: flipped ? "rotate(180deg)" : "rotate(0deg)" }}
+			>
+				<svg
+					aria-hidden="true"
+					width="16"
+					height="16"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="2"
+				>
+					<path d="M12 5v14m0 0l-4-4m4 4l4-4" />
+				</svg>
+			</button>
+		</div>
+	)
+}
