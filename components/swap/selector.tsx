@@ -8,6 +8,7 @@ function uid(t: SwapToken) {
 }
 
 function Avatar({ token, size = 32 }: { token: SwapToken; size?: number }) {
+	const [err, setErr] = useState(false)
 	const colors: Record<string, string> = {
 		E: "#627EEA",
 		U: "#2775CA",
@@ -23,6 +24,20 @@ function Avatar({ token, size = 32 }: { token: SwapToken; size?: number }) {
 		R: "#6B8CEF",
 	}
 	const bg = colors[token.symbol[0]] ?? "#444"
+
+	if (token.logo && !err) {
+		return (
+			<img
+				src={token.logo}
+				alt=""
+				width={size}
+				height={size}
+				className="shrink-0 rounded-full"
+				onError={() => setErr(true)}
+			/>
+		)
+	}
+
 	return (
 		<span
 			className="flex shrink-0 items-center justify-center rounded-full font-bold"
