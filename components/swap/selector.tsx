@@ -118,7 +118,10 @@ function Modal({
 	}
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-end justify-center md:items-start md:pt-[10vh]">
+		<div
+			className="fixed inset-0 z-50 flex items-end justify-center md:items-start md:pt-[10vh]"
+			style={{ animation: "fadein 200ms ease-out" }}
+		>
 			<div
 				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
 				onClick={onClose}
@@ -126,7 +129,10 @@ function Modal({
 				role="button"
 				tabIndex={-1}
 			/>
-			<div className="relative flex max-h-[100dvh] w-full flex-col rounded-t-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl md:max-h-[80vh] md:max-w-md md:rounded-2xl">
+			<div
+				className="relative flex max-h-[100dvh] w-full flex-col rounded-t-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl md:max-h-[80vh] md:max-w-md md:rounded-2xl"
+				style={{ animation: "slideup 200ms ease-out" }}
+			>
 				<div className="flex items-start justify-between p-4 pb-0 md:p-5 md:pb-0">
 					<div>
 						<h3 className="text-base font-semibold text-white">select a token</h3>

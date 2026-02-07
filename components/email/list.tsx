@@ -21,7 +21,7 @@ export default function List() {
 					key={email.id}
 					type="button"
 					onClick={() => setSelected(email.id)}
-					className={`group w-full px-5 py-4 text-left transition-colors ${
+					className={`group w-full px-5 py-4 text-left transition-[background-color] duration-150 ${
 						selected === email.id ? "bg-white/[0.04]" : "hover:bg-white/[0.02]"
 					}`}
 				>

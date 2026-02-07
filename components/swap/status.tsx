@@ -12,7 +12,10 @@ export default function Status({
 	if (!result) return null
 
 	return (
-		<div className="absolute inset-0 z-20 flex flex-col items-center justify-center rounded-2xl bg-[#1e1c1a]/95 p-4 backdrop-blur-sm md:p-6">
+		<div
+			className="absolute inset-0 z-20 flex flex-col items-center justify-center rounded-2xl bg-[#1e1c1a]/95 p-4 backdrop-blur-sm md:p-6"
+			style={{ animation: "fadein 200ms ease-out" }}
+		>
 			{result.status === "pending" && (
 				<>
 					<div className="mb-4 h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-[#EC4612]" />
@@ -22,7 +25,10 @@ export default function Status({
 
 			{result.status === "success" && (
 				<>
-					<div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#BCEC79]/10">
+					<div
+						className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#BCEC79]/10"
+						style={{ animation: "scalein 300ms ease-out" }}
+					>
 						<svg
 							aria-hidden="true"
 							width="20"
