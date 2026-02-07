@@ -152,7 +152,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 				onSelect={setOutput}
 			/>
 			<div
-				className={`overflow-hidden transition-all duration-200 ${quote ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}
+				className={`overflow-hidden transition-all duration-200 ${quote ? "max-h-48 opacity-100" : "max-h-0 opacity-0"}`}
 			>
 				{quote && (
 					<Details
