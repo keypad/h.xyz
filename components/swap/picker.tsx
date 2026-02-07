@@ -40,6 +40,7 @@ export function Search({
 				{query && (
 					<button
 						type="button"
+						aria-label="clear"
 						onClick={() => onChange("")}
 						className="text-white/20 hover:text-white/40"
 					>

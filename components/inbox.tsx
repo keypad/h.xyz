@@ -49,6 +49,7 @@ export default function Inbox() {
 				<div className="hidden items-center justify-end px-5 md:flex">
 					<button
 						type="button"
+						aria-label="compose"
 						className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f996ee] text-white transition-opacity hover:opacity-90"
 					>
 						<svg
