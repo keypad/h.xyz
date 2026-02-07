@@ -126,15 +126,16 @@ const TOKENS: SwapToken[] = [
 export const jupiter: ProviderModule = {
 	tokens: () => TOKENS,
 
-	quote: async ({ input, output, amount }) => {
+	quote: async ({ input, output, amount, slippage }) => {
 		const lamports = toSmallest(amount, input.decimals)
 		if (lamports === "0") return null
 
+		const bps = Math.round((slippage ?? 0.5) * 100)
 		const params = new URLSearchParams({
 			inputMint: input.address,
 			outputMint: output.address,
 			amount: lamports,
-			slippageBps: "50",
+			slippageBps: bps.toString(),
 			restrictIntermediateTokens: "true",
 		})
 

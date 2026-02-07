@@ -210,7 +210,7 @@ export const uniswap: ProviderModule = {
 		}
 	},
 
-	swap: async ({ quote, sender, signer }) => {
+	swap: async ({ quote, sender, signer, slippage: slippagePct }) => {
 		const raw = quote._raw as Record<string, any> | undefined
 		if (!raw || !signer) return { status: "error", message: "missing data" }
 
@@ -220,9 +220,9 @@ export const uniswap: ProviderModule = {
 			"function exactInputSingle((address tokenIn, address tokenOut, uint24 fee, address recipient, uint256 amountIn, uint256 amountOutMinimum, uint160 sqrtPriceLimitX96)) external payable returns (uint256 amountOut)",
 		])
 
-		const slippage = 0.995
+		const tolerance = 1 - (slippagePct ?? 0.5) / 100
 		const minOut = BigInt(
-			Math.floor(Number.parseFloat(quote.outputAmount) * slippage * 10 ** quote.output.decimals),
+			Math.floor(Number.parseFloat(quote.outputAmount) * tolerance * 10 ** quote.output.decimals),
 		)
 
 		const calldata = encodeFunctionData({
