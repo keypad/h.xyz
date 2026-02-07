@@ -104,7 +104,8 @@ export function Provider({ children }: { children: ReactNode }) {
 				return (
 					e.from.toLowerCase().includes(q) ||
 					e.subject.toLowerCase().includes(q) ||
-					e.preview.toLowerCase().includes(q)
+					e.preview.toLowerCase().includes(q) ||
+					e.body.toLowerCase().includes(q)
 				)
 			}),
 		[emails, folder, search],
