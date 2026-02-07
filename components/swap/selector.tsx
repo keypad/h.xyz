@@ -71,6 +71,10 @@ function Modal({
 
 	useEffect(() => {
 		inputRef.current?.focus()
+		document.body.style.overflow = "hidden"
+		return () => {
+			document.body.style.overflow = ""
+		}
 	}, [])
 
 	useEffect(() => {
