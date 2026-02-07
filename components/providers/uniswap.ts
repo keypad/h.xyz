@@ -48,7 +48,7 @@ const TOKENS: SwapToken[] = [
 ]
 
 const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
-const QUOTER = "0x61fFE014bA17989E743c5F6cB21bF9697530B21e"
+const QUOTER = "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6"
 
 function toSmallest(amount: string, decimals: number): string {
 	const n = Number.parseFloat(amount)
@@ -72,59 +72,61 @@ export const uniswap: ProviderModule = {
 		const tokenIn = tokenAddress(input)
 		const tokenOut = tokenAddress(output)
 
-		const { encodeFunctionData, createPublicClient, http, parseAbi } = await import("viem")
-		const { mainnet } = await import("viem/chains")
+		try {
+			const { encodeFunctionData, createPublicClient, http, parseAbi, decodeFunctionResult } =
+				await import("viem")
+			const { mainnet } = await import("viem/chains")
 
-		const client = createPublicClient({ chain: mainnet, transport: http() })
+			const client = createPublicClient({ chain: mainnet, transport: http() })
 
-		const quoterAbi = parseAbi([
-			"function quoteExactInputSingle((address tokenIn, address tokenOut, uint256 amountIn, uint24 fee, uint160 sqrtPriceLimitX96)) external returns (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate)",
-		])
+			const quoterAbi = parseAbi([
+				"function quoteExactInputSingle(address tokenIn, address tokenOut, uint24 fee, uint256 amountIn, uint160 sqrtPriceLimitX96) external returns (uint256 amountOut)",
+			])
 
-		const data = encodeFunctionData({
-			abi: quoterAbi,
-			functionName: "quoteExactInputSingle",
-			args: [
-				{
-					tokenIn: tokenIn as `0x${string}`,
-					tokenOut: tokenOut as `0x${string}`,
-					amountIn: BigInt(sellAmount),
-					fee: 3000,
-					sqrtPriceLimitX96: BigInt(0),
-				},
-			],
-		})
+			const data = encodeFunctionData({
+				abi: quoterAbi,
+				functionName: "quoteExactInputSingle",
+				args: [
+					tokenIn as `0x${string}`,
+					tokenOut as `0x${string}`,
+					3000,
+					BigInt(sellAmount),
+					BigInt(0),
+				],
+			})
 
-		const result = await client.call({
-			to: QUOTER as `0x${string}`,
-			data,
-		})
+			const result = await client.call({
+				to: QUOTER as `0x${string}`,
+				data,
+			})
 
-		if (!result.data) return null
+			if (!result.data) return null
 
-		const { decodeFunctionResult } = await import("viem")
-		const decoded = decodeFunctionResult({
-			abi: quoterAbi,
-			functionName: "quoteExactInputSingle",
-			data: result.data,
-		})
-		const amountOut = decoded[0] as bigint
+			const decoded = decodeFunctionResult({
+				abi: quoterAbi,
+				functionName: "quoteExactInputSingle",
+				data: result.data,
+			})
+			const amountOut = decoded as bigint
 
-		const outputAmount = (Number(amountOut) / 10 ** output.decimals).toString()
-		const inputNum = Number.parseFloat(amount)
-		const outputNum = Number.parseFloat(outputAmount)
+			const outputAmount = (Number(amountOut) / 10 ** output.decimals).toString()
+			const inputNum = Number.parseFloat(amount)
+			const outputNum = Number.parseFloat(outputAmount)
 
-		return {
-			provider: "uniswap",
-			input,
-			output,
-			inputAmount: amount,
-			outputAmount,
-			rate: inputNum > 0 ? outputNum / inputNum : 0,
-			route: "uniswap v3",
-			estimatedGas: "150000",
-			_raw: { tokenIn, tokenOut, sellAmount, fee: 3000 },
-		} as Quote & { _raw: any }
+			return {
+				provider: "uniswap",
+				input,
+				output,
+				inputAmount: amount,
+				outputAmount,
+				rate: inputNum > 0 ? outputNum / inputNum : 0,
+				route: "uniswap v3",
+				estimatedGas: "150000",
+				_raw: { tokenIn, tokenOut, sellAmount, fee: 3000 },
+			} as Quote & { _raw: any }
+		} catch {
+			return null
+		}
 	},
 
 	swap: async ({ quote, sender, signer }) => {
