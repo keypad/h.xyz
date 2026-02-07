@@ -1,56 +1,59 @@
 "use client"
 
 import { useWallet } from "@solana/wallet-adapter-react"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useConnect } from "wagmi"
 import { useWalletContext } from "./context"
 
-type WalletItem = {
-	id: string
-	name: string
-	icon?: string
-	go: () => void
-}
+const EVM_WALLETS = [
+	{
+		name: "MetaMask",
+		match: "metamask",
+		icon: "https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg",
+	},
+	{
+		name: "Coinbase Wallet",
+		match: "coinbase",
+		icon: "https://altcoinsbox.com/wp-content/uploads/2022/12/coinbase-logo-300x300.webp",
+	},
+	{
+		name: "WalletConnect",
+		match: "walletconnect",
+		icon: "https://altcoinsbox.com/wp-content/uploads/2023/04/wallet-connect-logo-300x300.webp",
+	},
+	{
+		name: "Phantom",
+		match: "phantom",
+		icon: "https://phantom.app/img/phantom-logo.svg",
+	},
+	{
+		name: "Rabby",
+		match: "rabby",
+		icon: "https://rabby.io/assets/icons/logo.svg",
+	},
+]
 
-function useEvmWallets(): WalletItem[] {
-	const { connect, connectors } = useConnect()
-	return useMemo(() => {
-		const seen = new Map<string, WalletItem>()
-		for (const c of connectors) {
-			const key = c.name.toLowerCase()
-			const existing = seen.get(key)
-			if (existing && !existing.icon && c.icon) {
-				seen.set(key, { id: c.id, name: c.name, icon: c.icon, go: () => connect({ connector: c }) })
-			} else if (!existing) {
-				seen.set(key, { id: c.id, name: c.name, icon: c.icon, go: () => connect({ connector: c }) })
-			}
-		}
-		return Array.from(seen.values())
-	}, [connectors, connect])
-}
-
-function useSolWallets(): WalletItem[] {
-	const sol = useWallet()
-	return useMemo(
-		() =>
-			sol.wallets.map((w) => ({
-				id: w.adapter.name,
-				name: w.adapter.name,
-				icon: w.adapter.icon,
-				go: () => sol.select(w.adapter.name),
-			})),
-		[sol],
-	)
-}
+const SOL_WALLETS = [
+	{
+		name: "Phantom",
+		icon: "https://phantom.app/img/phantom-logo.svg",
+	},
+	{
+		name: "Solflare",
+		icon: "https://solflare.com/favicon.svg",
+	},
+	{
+		name: "Backpack",
+		icon: "https://backpack.app/favicon.ico",
+	},
+]
 
 export default function ConnectButton() {
 	const { connecting, chain } = useWalletContext()
 	const [open, setOpen] = useState(false)
 	const ref = useRef<HTMLDivElement>(null)
+	const { connect: evmConnect, connectors } = useConnect()
 	const sol = useWallet()
-	const evmItems = useEvmWallets()
-	const solItems = useSolWallets()
-	const items = chain === "solana" ? solItems : evmItems
 
 	useEffect(() => {
 		if (!open) return
@@ -86,6 +89,22 @@ export default function ConnectButton() {
 		)
 	}
 
+	const evmPick = (wallet: (typeof EVM_WALLETS)[0]) => {
+		const match = wallet.match.toLowerCase()
+		const connector =
+			connectors.find((c) => c.name.toLowerCase().includes(match)) ||
+			connectors.find((c) => c.id.toLowerCase().includes(match)) ||
+			connectors.find((c) => c.id === "injected")
+		if (connector) evmConnect({ connector })
+	}
+
+	const solPick = (wallet: (typeof SOL_WALLETS)[0]) => {
+		const adapter = sol.wallets.find(
+			(w) => w.adapter.name.toLowerCase() === wallet.name.toLowerCase(),
+		)
+		if (adapter) sol.select(adapter.adapter.name)
+	}
+
 	return (
 		<div className="relative" ref={ref}>
 			<button
@@ -100,27 +119,28 @@ export default function ConnectButton() {
 					className="absolute top-full left-0 z-50 mt-2 w-full rounded-xl border border-white/[0.06] bg-[#2a2826] p-1.5"
 					style={{ animation: "slideup 150ms ease-out" }}
 				>
-					{items.length === 0 && (
-						<p className="px-3 py-2 text-xs text-white/30">no wallets detected</p>
-					)}
-					{items.map((w) => (
-						<button
-							key={w.id}
-							type="button"
-							onClick={() => {
-								w.go()
-								setOpen(false)
-							}}
-							className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
-						>
-							{w.icon && (
-								<img src={w.icon.trim()} alt="" width={20} height={20} className="rounded" />
-							)}
-							{w.name}
-						</button>
-					))}
+					{chain === "solana"
+						? SOL_WALLETS.map((w) => (
+								<WalletRow key={w.name} name={w.name} icon={w.icon} onClick={() => { solPick(w); setOpen(false) }} />
+							))
+						: EVM_WALLETS.map((w) => (
+								<WalletRow key={w.name} name={w.name} icon={w.icon} onClick={() => { evmPick(w); setOpen(false) }} />
+							))}
 				</div>
 			)}
 		</div>
+	)
+}
+
+function WalletRow({ name, icon, onClick }: { name: string; icon: string; onClick: () => void }) {
+	return (
+		<button
+			type="button"
+			onClick={onClick}
+			className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
+		>
+			<img src={icon} alt="" width={20} height={20} className="rounded" />
+			{name}
+		</button>
 	)
 }
