@@ -11,6 +11,7 @@ export default function Compose() {
 	const [body, setBody] = useState("")
 
 	const toRef = useRef<HTMLInputElement>(null)
+	const bodyRef = useRef<HTMLTextAreaElement>(null)
 
 	useEffect(() => {
 		if (!composing) return
@@ -19,7 +20,8 @@ export default function Compose() {
 			setSubject(draft.subject)
 			setBody(draft.body)
 		}
-		setTimeout(() => toRef.current?.focus(), 50)
+		const target = draft?.to ? bodyRef.current : toRef.current
+		setTimeout(() => target?.focus(), 50)
 	}, [composing, draft])
 
 	if (!composing) return null
@@ -84,6 +86,7 @@ export default function Compose() {
 					</div>
 				</div>
 				<textarea
+					ref={bodyRef}
 					value={body}
 					onChange={(e) => setBody(e.target.value)}
 					rows={10}
