@@ -5,7 +5,7 @@ import { useEmail } from "@/components/email/context"
 import { CloseIcon, LockIcon, SendIcon } from "@/components/email/icons"
 
 export default function Compose() {
-	const { composing, setComposing } = useEmail()
+	const { composing, setComposing, send } = useEmail()
 	const [to, setTo] = useState("")
 	const [subject, setSubject] = useState("")
 	const [body, setBody] = useState("")
@@ -79,8 +79,12 @@ export default function Compose() {
 					</div>
 					<button
 						type="button"
-						onClick={close}
-						className="flex items-center gap-2 rounded-xl bg-[#f996ee] px-5 py-2 text-[12px] font-medium text-white transition-opacity hover:opacity-90"
+						disabled={!to.trim()}
+						onClick={() => {
+							if (to.trim()) send(to.trim(), subject || "(no subject)", body)
+							close()
+						}}
+						className="flex items-center gap-2 rounded-xl bg-[#f996ee] px-5 py-2 text-[12px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
 					>
 						<SendIcon />
 						send

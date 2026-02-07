@@ -12,6 +12,8 @@ type State = {
 	emails: Email[]
 	markRead: (id: number) => void
 	toggleStar: (id: number) => void
+	send: (to: string, subject: string, body: string) => void
+	trash: (id: number) => void
 	setFolder: (id: string) => void
 	setSelected: (id: number | null) => void
 	setComposing: (v: boolean) => void
@@ -36,6 +38,33 @@ export function Provider({ children }: { children: ReactNode }) {
 
 	const toggleStar = (id: number) =>
 		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, starred: !e.starred } : e)))
+
+	const send = (to: string, subject: string, body: string) => {
+		const id = Math.max(...emails.map((e) => e.id)) + 1
+		const now = new Date()
+		const time = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }).toLowerCase()
+		const date = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+		setEmails((prev) => [
+			{
+				id,
+				folder: "sent",
+				from: "hi@h.xyz",
+				to,
+				subject,
+				preview: body.slice(0, 80),
+				time,
+				date,
+				unread: false,
+				starred: false,
+				encrypted: true,
+				body,
+			},
+			...prev,
+		])
+	}
+
+	const trash = (id: number) =>
+		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, folder: "trash" } : e)))
 
 	const filtered = useMemo(
 		() =>
@@ -75,6 +104,8 @@ export function Provider({ children }: { children: ReactNode }) {
 				emails,
 				markRead,
 				toggleStar,
+				send,
+				trash,
 				setFolder,
 				setSelected,
 				setComposing,
