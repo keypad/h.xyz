@@ -122,6 +122,15 @@ export default function Status({
 			>
 				close
 			</button>
+
+			{result.status === "success" && (
+				<div className="absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden rounded-b-2xl">
+					<div
+						className="h-full bg-[#BCEC79]/30"
+						style={{ animation: "shrink 8s linear forwards" }}
+					/>
+				</div>
+			)}
 		</div>
 	)
 }
