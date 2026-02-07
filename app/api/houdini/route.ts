@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 	}
 
 	const headers: Record<string, string> = {}
-	if (KEY) headers.Authorization = KEY
+	if (KEY) headers.Authorization = `Basic ${Buffer.from(KEY).toString("base64")}`
 
 	const upstream = await fetch(`${BASE}${endpoint}?${params}`, {
 		headers,
