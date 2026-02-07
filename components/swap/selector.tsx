@@ -113,16 +113,16 @@ function Modal({
 
 				{!query && (
 					<>
-						<div className="flex gap-1.5 px-4 pt-3 md:px-5">
+						<div className="flex gap-1.5 overflow-x-auto px-4 pt-3 md:px-5">
 							{(["all", "popular", "defi", "stablecoins"] as Category[]).map((cat) => (
 								<button
 									key={cat}
 									type="button"
 									onClick={() => setCategory(cat)}
-									className={`rounded-full border border-white/[0.06] px-3 py-1.5 text-xs font-medium transition-colors ${
+									className={`shrink-0 rounded-full border border-white/[0.06] px-3 py-1.5 text-xs font-medium transition-colors ${
 										category === cat
-											? "bg-white/[0.06] text-white"
-											: "bg-white/[0.03] text-white/50 hover:bg-white/[0.06] hover:text-white/70"
+											? "bg-white/10 text-white"
+											: "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/70"
 									}`}
 								>
 									{cat}
