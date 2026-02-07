@@ -1,4 +1,5 @@
-import type { ProviderModule, Quote, SwapToken } from "./types"
+import type { ProviderModule, SwapToken } from "./types"
+import { toSmallest } from "./types"
 
 const TOKENS: SwapToken[] = [
 	{
@@ -45,11 +46,6 @@ const TOKENS: SwapToken[] = [
 	},
 ]
 
-function toSmallest(amount: string, decimals: number): string {
-	const n = Number.parseFloat(amount)
-	return Math.floor(n * 10 ** decimals).toString()
-}
-
 export const jupiter: ProviderModule = {
 	tokens: () => TOKENS,
 
@@ -85,11 +81,11 @@ export const jupiter: ProviderModule = {
 			route: data.routePlan?.[0]?.swapInfo?.label ?? "jupiter v6",
 			fee: data.platformFee?.amount ?? "0",
 			_raw: data,
-		} as Quote & { _raw: any }
+		}
 	},
 
 	swap: async ({ quote, sender, signer }) => {
-		const raw = (quote as any)._raw
+		const raw = quote._raw as Record<string, any> | undefined
 		if (!raw) return { status: "error", message: "no quote data" }
 
 		const res = await fetch("/api/jupiter", {
