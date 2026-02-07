@@ -11,6 +11,7 @@ import type { ChainType, ProviderModule, Quote, SwapResult, SwapToken } from "..
 import { uniswap } from "../providers/uniswap"
 import { useWalletContext, WalletContextProvider } from "../wallet/context"
 import Selector from "./selector"
+import Settings, { useSlippage } from "./settings"
 import Status from "./status"
 
 const modules: Record<string, ProviderModule> = {
@@ -41,6 +42,7 @@ function SwapForm({ providerId }: { providerId: string }) {
 	const [result, setResult] = useState<SwapResult | null>(null)
 	const timer = useRef<ReturnType<typeof setTimeout>>(null)
 	const { connected, address, signer, connect, chain } = useWalletContext()
+	const { slippage, setSlippage } = useSlippage()
 
 	useEffect(() => {
 		setInput(tokenList[0])
@@ -57,13 +59,13 @@ function SwapForm({ providerId }: { providerId: string }) {
 		}
 		setLoading(true)
 		try {
-			const q = await mod.quote({ input, output, amount, sender: address ?? undefined })
+			const q = await mod.quote({ input, output, amount, sender: address ?? undefined, slippage })
 			setQuote(q)
 		} catch {
 			setQuote(null)
 		}
 		setLoading(false)
-	}, [mod, input, output, amount, address])
+	}, [mod, input, output, amount, address, slippage])
 
 	useEffect(() => {
 		if (timer.current) clearTimeout(timer.current)
@@ -88,14 +90,14 @@ function SwapForm({ providerId }: { providerId: string }) {
 	const execute = async () => {
 		if (!quote || !connected || !signer || !address) return
 		setResult({ status: "pending" })
-		const res = await mod.swap({ quote, sender: address, signer })
+		const res = await mod.swap({ quote, sender: address, signer, slippage })
 		setResult(res)
 	}
 
 	const prov = providers.find((p) => p.id === providerId)
 
 	return (
-		<div className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-5">
+		<div className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-4 md:p-5">
 			<Status result={result} onClose={() => setResult(null)} />
 
 			<div className="mb-3 flex items-center justify-between px-1">
@@ -106,12 +108,15 @@ function SwapForm({ providerId }: { providerId: string }) {
 					</span>
 					{prov?.name}
 				</div>
-				{loading && <span className="text-[11px] text-white/20">quoting...</span>}
-				{!loading && quote && (
-					<span className="font-mono text-[11px] text-white/30">
-						1 {input.symbol} = {fmt(quote.rate)} {output.symbol}
-					</span>
-				)}
+				<div className="flex items-center gap-2">
+					{loading && <span className="text-[11px] text-white/20">quoting...</span>}
+					{!loading && quote && (
+						<span className="font-mono text-[11px] text-white/30">
+							1 {input.symbol} = {fmt(quote.rate)} {output.symbol}
+						</span>
+					)}
+					<Settings slippage={slippage} onChange={setSlippage} />
+				</div>
 			</div>
 
 			<div className="rounded-xl bg-white/[0.03] p-4">
@@ -122,7 +127,7 @@ function SwapForm({ providerId }: { providerId: string }) {
 						inputMode="decimal"
 						value={amount}
 						onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-						className="w-0 min-w-0 flex-1 bg-transparent text-3xl font-medium text-white outline-none placeholder:text-white/20"
+						className="w-0 min-w-0 flex-1 bg-transparent text-2xl font-medium text-white outline-none placeholder:text-white/20 md:text-3xl"
 						placeholder="0"
 					/>
 					<Selector token={input} tokens={tokenList} onSelect={setInput} exclude={output.address} />
@@ -152,7 +157,7 @@ function SwapForm({ providerId }: { providerId: string }) {
 			<div className="rounded-xl bg-white/[0.03] p-4">
 				<span className="text-[11px] text-white/25">you receive</span>
 				<div className="mt-2 flex items-center justify-between gap-3">
-					<span className="text-3xl font-medium text-white">
+					<span className="text-2xl font-medium text-white md:text-3xl">
 						{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "—"}
 					</span>
 					<Selector
@@ -185,6 +190,10 @@ function SwapForm({ providerId }: { providerId: string }) {
 						</div>
 					)}
 					<div className="flex items-center justify-between text-[12px]">
+						<span className="text-white/20">slippage</span>
+						<span className="text-white/35">{slippage}%</span>
+					</div>
+					<div className="flex items-center justify-between text-[12px]">
 						<span className="text-white/20">network</span>
 						<div className="flex items-center gap-1.5 text-white/35">
 							<span className="h-1.5 w-1.5 rounded-full" style={{ background: prov?.color }} />
@@ -199,7 +208,7 @@ function SwapForm({ providerId }: { providerId: string }) {
 					type="button"
 					disabled={!quote}
 					onClick={execute}
-					className="mt-4 w-full rounded-xl bg-[#EC4612] py-4 text-sm font-medium text-white transition-all hover:brightness-110 disabled:opacity-30 disabled:hover:brightness-100"
+					className="mt-4 w-full rounded-xl bg-[#EC4612] py-3.5 text-sm font-medium text-white transition-all hover:brightness-110 disabled:opacity-30 disabled:hover:brightness-100 md:py-4"
 				>
 					swap
 				</button>
@@ -207,7 +216,7 @@ function SwapForm({ providerId }: { providerId: string }) {
 				<button
 					type="button"
 					onClick={() => connect(chain)}
-					className="mt-4 w-full rounded-xl bg-[#EC4612] py-4 text-sm font-medium text-white transition-all hover:brightness-110"
+					className="mt-4 w-full rounded-xl bg-[#EC4612] py-3.5 text-sm font-medium text-white transition-all hover:brightness-110 md:py-4"
 				>
 					connect wallet
 				</button>
@@ -222,25 +231,29 @@ export default function Panel() {
 
 	return (
 		<WalletContextProvider chain={chain}>
-			<div className="flex gap-1 rounded-xl bg-white/[0.03] p-1">
-				{providers.map((p) => (
-					<button
-						key={p.id}
-						type="button"
-						onClick={() => setActive(p.id)}
-						className={`relative flex-1 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-							active === p.id ? "bg-white/[0.06] text-white" : "text-white/30 hover:text-white/50"
-						}`}
-					>
-						{active === p.id && (
-							<span
-								className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full"
-								style={{ background: p.color }}
-							/>
-						)}
-						{p.id === "cow" ? "cow" : p.id === "houdini" ? "houdini" : p.id}
-					</button>
-				))}
+			<div className="-mx-1 overflow-x-auto px-1 md:mx-0 md:px-0">
+				<div className="flex min-w-max gap-1 rounded-xl bg-white/[0.03] p-1 md:min-w-0">
+					{providers.map((p) => (
+						<button
+							key={p.id}
+							type="button"
+							onClick={() => setActive(p.id)}
+							className={`relative flex-1 whitespace-nowrap rounded-lg px-3 py-2.5 text-xs font-medium transition-colors md:py-2 ${
+								active === p.id
+									? "bg-white/[0.06] text-white"
+									: "text-white/30 hover:text-white/50"
+							}`}
+						>
+							{active === p.id && (
+								<span
+									className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full"
+									style={{ background: p.color }}
+								/>
+							)}
+							{p.id === "cow" ? "cow" : p.id === "houdini" ? "houdini" : p.id}
+						</button>
+					))}
+				</div>
 			</div>
 
 			<div className="mt-4">
