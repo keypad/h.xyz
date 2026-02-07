@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
+import { tokenIcon } from "../providers/icons"
 import type { SwapToken } from "../providers/types"
 
 function uid(t: SwapToken) {
@@ -25,10 +26,12 @@ function Avatar({ token, size = 32 }: { token: SwapToken; size?: number }) {
 	}
 	const bg = colors[token.symbol[0]] ?? "#444"
 
-	if (token.logo && !err) {
+	const logo = token.logo || tokenIcon(token)
+
+	if (logo && !err) {
 		return (
 			<img
-				src={token.logo}
+				src={logo}
 				alt=""
 				width={size}
 				height={size}
