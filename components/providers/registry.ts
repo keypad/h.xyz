@@ -4,6 +4,7 @@ export const providers: Provider[] = [
 	{
 		id: "jupiter",
 		name: "jupiter",
+		tag: "solana dex aggregator",
 		color: "#9945FF",
 		chains: ["solana"],
 		crosschain: false,
@@ -12,6 +13,7 @@ export const providers: Provider[] = [
 	{
 		id: "cow",
 		name: "cow protocol",
+		tag: "mev protected",
 		color: "#012D72",
 		chains: ["evm"],
 		crosschain: false,
@@ -20,6 +22,7 @@ export const providers: Provider[] = [
 	{
 		id: "debridge",
 		name: "debridge",
+		tag: "cross-chain",
 		color: "#6944BA",
 		chains: ["evm", "solana"],
 		crosschain: true,
@@ -28,6 +31,7 @@ export const providers: Provider[] = [
 	{
 		id: "houdini",
 		name: "houdini swap",
+		tag: "privacy route",
 		color: "#7B2FBF",
 		chains: ["evm", "solana"],
 		crosschain: true,
@@ -36,6 +40,7 @@ export const providers: Provider[] = [
 	{
 		id: "uniswap",
 		name: "uniswap",
+		tag: "on-chain amm",
 		color: "#FF007A",
 		chains: ["evm"],
 		crosschain: false,

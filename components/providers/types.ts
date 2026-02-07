@@ -3,6 +3,7 @@ export type ChainType = "evm" | "solana"
 export type Provider = {
 	id: string
 	name: string
+	tag?: string
 	color: string
 	chains: ChainType[]
 	crosschain: boolean
