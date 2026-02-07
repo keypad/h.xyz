@@ -28,6 +28,17 @@ export default function Panel() {
 		window.location.hash = active
 	}, [active])
 
+	useEffect(() => {
+		const handler = (e: KeyboardEvent) => {
+			const tag = (e.target as HTMLElement).tagName
+			if (tag === "INPUT" || tag === "TEXTAREA") return
+			const idx = Number(e.key) - 1
+			if (idx >= 0 && idx < providers.length) switchTab(providers[idx].id)
+		}
+		window.addEventListener("keydown", handler)
+		return () => window.removeEventListener("keydown", handler)
+	})
+
 	const switchTab = (id: string) => {
 		if (id === active) return
 		setFading(true)
