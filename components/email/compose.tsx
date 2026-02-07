@@ -96,9 +96,17 @@ export default function Compose() {
 					placeholder="write your message..."
 				/>
 				<div className="flex items-center justify-between border-t border-white/[0.06] px-5 py-3">
-					<div className="flex items-center gap-1.5 text-[11px] text-white/15">
-						<LockIcon className="text-white/15" />
-						encrypted
+					<div className="flex items-center gap-3">
+						<div className="flex items-center gap-1.5 text-[11px] text-white/15">
+							<LockIcon className="text-white/15" />
+							encrypted
+						</div>
+						<span className="hidden text-[10px] text-white/10 sm:inline">
+							{typeof navigator !== "undefined" && navigator.platform?.includes("Mac")
+								? "\u2318"
+								: "ctrl"}
+							+enter
+						</span>
 					</div>
 					<button
 						type="button"
