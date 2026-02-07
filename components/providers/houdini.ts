@@ -32,13 +32,46 @@ const POPULAR: SwapToken[] = [
 	{ address: "MATIC", symbol: "MATIC", decimals: 18, name: "Polygon" },
 ].map((t) => ({ ...t, logo: t.logo || tokenIcon(t) }))
 
+let cached: SwapToken[] | null = null
+let fetching = false
+
+function mapToken(t: any): SwapToken {
+	const token: SwapToken = {
+		address: t.id || t.symbol,
+		symbol: t.symbol,
+		decimals: 18,
+		name: t.displayName || t.name,
+		logo: t.icon,
+	}
+	token.logo = token.logo || tokenIcon(token)
+	return token
+}
+
+function fetchTokens() {
+	if (fetching || cached) return
+	fetching = true
+	fetch("/api/houdini?action=tokens")
+		.then((res) => (res.ok ? res.json() : Promise.reject()))
+		.then((data: any[]) => {
+			const sorted = data.sort((a, b) => (Number(b.marketCap) || 0) - (Number(a.marketCap) || 0))
+			cached = sorted.map(mapToken)
+		})
+		.catch(() => {})
+		.finally(() => {
+			fetching = false
+		})
+}
+
 function amount(data: Record<string, unknown>): string | null {
 	const v = data.amountOut ?? data.estimated_amount ?? data.amount_out
 	return v != null ? String(v) : null
 }
 
 export const houdini: ProviderModule = {
-	tokens: () => POPULAR,
+	tokens: () => {
+		fetchTokens()
+		return cached || POPULAR
+	},
 
 	quote: async ({ input, output, amount: raw }) => {
 		const n = Number.parseFloat(raw)
