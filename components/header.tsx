@@ -5,8 +5,8 @@ import { useEffect, useState } from "react"
 import Ghost from "@/components/ghost"
 
 const links = [
-	{ label: "swap", href: "#swap", color: "#EC4612" },
-	{ label: "email", href: "#email", color: "#f996ee" },
+	{ label: "swap", href: "/swap", color: "#EC4612" },
+	{ label: "email", href: "/email", color: "#f996ee" },
 	{ label: "docs", href: "/docs", color: "#BCEC79" },
 ]
 
