@@ -51,6 +51,12 @@ const ETH_TOKENS: SwapToken[] = [
 	{ address: "0x6B175474E89094C44Da98b954EedeAC495271d0F", symbol: "DAI", decimals: 18, name: "Dai", chainId: 1 },
 	{ address: WETH_BY_CHAIN[1], symbol: "WETH", decimals: 18, name: "Wrapped Ether", chainId: 1 },
 	{ address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", symbol: "UNI", decimals: 18, name: "Uniswap", chainId: 1 },
+	{ address: "0x514910771AF9Ca656af840dff83E8264EcF986CA", symbol: "LINK", decimals: 18, name: "Chainlink", chainId: 1, logo: `${TW}/0x514910771AF9Ca656af840dff83E8264EcF986CA/logo.png` },
+	{ address: "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9", symbol: "AAVE", decimals: 18, name: "Aave", chainId: 1 },
+	{ address: "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2", symbol: "MKR", decimals: 18, name: "Maker", chainId: 1, logo: `${TW}/0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2/logo.png` },
+	{ address: "0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32", symbol: "LDO", decimals: 18, name: "Lido DAO", chainId: 1, logo: `${TW}/0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32/logo.png` },
+	{ address: "0x6982508145454Ce325dDbE47a25d4ec3d2311933", symbol: "PEPE", decimals: 18, name: "Pepe", chainId: 1, logo: `${TW}/0x6982508145454Ce325dDbE47a25d4ec3d2311933/logo.png` },
+	{ address: "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE", symbol: "SHIB", decimals: 18, name: "Shiba Inu", chainId: 1, logo: `${TW}/0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE/logo.png` },
 ]
 
 const POLYGON_TOKENS: SwapToken[] = [
@@ -65,6 +71,8 @@ const ARB_TOKENS: SwapToken[] = [
 	{ address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", symbol: "USDC", decimals: 6, name: "USD Coin", chainId: 42161 },
 	{ address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9", symbol: "USDT", decimals: 6, name: "Tether", chainId: 42161 },
 	{ address: WETH_BY_CHAIN[42161], symbol: "WETH", decimals: 18, name: "Wrapped Ether", chainId: 42161 },
+	{ address: "0x912CE59144191C1204E64559FE8253a0e49E6548", symbol: "ARB", decimals: 18, name: "Arbitrum", chainId: 42161 },
+	{ address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a", symbol: "GMX", decimals: 18, name: "GMX", chainId: 42161 },
 ]
 
 const OP_TOKENS: SwapToken[] = [
@@ -78,6 +86,7 @@ const BASE_TOKENS: SwapToken[] = [
 	{ address: NATIVE, symbol: "ETH", decimals: 18, name: "Ether", chainId: 8453 },
 	{ address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", symbol: "USDC", decimals: 6, name: "USD Coin", chainId: 8453 },
 	{ address: WETH_BY_CHAIN[8453], symbol: "WETH", decimals: 18, name: "Wrapped Ether", chainId: 8453 },
+	{ address: "0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22", symbol: "cbETH", decimals: 18, name: "Coinbase Wrapped Staked ETH", chainId: 8453 },
 ]
 
 export const UNI_TOKENS: SwapToken[] = [
