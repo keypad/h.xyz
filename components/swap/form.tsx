@@ -181,7 +181,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 						value={destination}
 						onChange={(e) => setDestination(e.target.value.trim())}
 						placeholder="destination address"
-						className="w-full rounded-xl bg-white/[0.06] px-4 py-3 font-mono text-sm text-white outline-none placeholder:text-white/25"
+						className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 font-mono text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/[0.12]"
 					/>
 					<SwapButton disabled={!quote || !destination} error={error} onClick={execute} />
 				</div>
