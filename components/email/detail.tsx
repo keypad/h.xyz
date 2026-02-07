@@ -9,14 +9,14 @@ export default function Detail() {
 
 	if (!active) {
 		return (
-			<div className="flex flex-1 items-center justify-center text-[13px] text-white/15">
-				select a message
+			<div className="flex flex-1 items-center justify-center">
+				<span className="text-[13px] text-white/15">select a message</span>
 			</div>
 		)
 	}
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col">
+		<div className="flex min-h-0 flex-1 flex-col animate-[slideup_200ms_ease-out]">
 			<div className="border-b border-white/[0.06] px-6 py-4">
 				<div className="flex items-center gap-3">
 					<button

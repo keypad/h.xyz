@@ -1,27 +1,34 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import { useEmail } from "@/components/email/context"
+import Empty from "@/components/email/empty"
 import { LockIcon } from "@/components/email/icons"
 
 export default function List() {
 	const { filtered, selected, setSelected, folder } = useEmail()
+	const refs = useRef<Map<number, HTMLButtonElement>>(new Map())
 
-	if (filtered.length === 0) {
-		return (
-			<div className="flex flex-1 items-center justify-center text-[13px] text-white/15">
-				{folder === "trash" ? "empty" : "nothing here"}
-			</div>
-		)
-	}
+	useEffect(() => {
+		if (selected) {
+			const el = refs.current.get(selected)
+			el?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+		}
+	}, [selected])
+
+	if (filtered.length === 0) return <Empty folder={folder} />
 
 	return (
 		<div className="flex-1 divide-y divide-white/[0.03] overflow-y-auto">
 			{filtered.map((email) => (
 				<button
 					key={email.id}
+					ref={(el) => {
+						if (el) refs.current.set(email.id, el)
+					}}
 					type="button"
 					onClick={() => setSelected(email.id)}
-					className={`group w-full px-5 py-4 text-left transition-[background-color] duration-150 ${
+					className={`group w-full px-5 py-4 text-left transition-colors duration-150 ${
 						selected === email.id ? "bg-white/[0.04]" : "hover:bg-white/[0.02]"
 					}`}
 				>

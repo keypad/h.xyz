@@ -23,10 +23,10 @@ export default function Compose() {
 		<div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
 			<button
 				type="button"
-				className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+				className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-[overlayshow_150ms_ease-out]"
 				onClick={close}
 			/>
-			<div className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl">
+			<div className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl animate-[slideup_250ms_ease-out]">
 				<div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3.5">
 					<span className="text-[13px] font-medium text-white">new message</span>
 					<button
