@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react"
 import { providers } from "../providers/registry"
 import type { ChainType } from "../providers/types"
 import { WalletContextProvider } from "../wallet/context"
@@ -15,7 +15,7 @@ function chainFor(id: string): ChainType {
 export default function Panel() {
 	const [active, setActive] = useState("jupiter")
 	const [chainId, setChainId] = useState(1)
-	const [fading, setFading] = useState(false)
+	const [, startTransition] = useTransition()
 	const chain = chainFor(active)
 	const chains = chainsFor(active)
 	const tabsRef = useRef<HTMLDivElement>(null)
@@ -51,12 +51,10 @@ export default function Panel() {
 
 	const switchTab = (id: string) => {
 		if (id === active) return
-		setFading(true)
-		setTimeout(() => {
+		startTransition(() => {
 			setActive(id)
 			setChainId(1)
-			setFading(false)
-		}, 150)
+		})
 	}
 
 	return (
@@ -98,8 +96,8 @@ export default function Panel() {
 				</div>
 			)}
 
-			<div className="mt-4 transition-opacity duration-150" style={{ opacity: fading ? 0 : 1 }}>
-				<SwapForm key={`${active}-${chainId}`} providerId={active} chainId={chainId} />
+			<div key={`${active}-${chainId}`} className="mt-4 animate-[fadein_150ms_ease-out]">
+				<SwapForm providerId={active} chainId={chainId} />
 			</div>
 		</WalletContextProvider>
 	)
