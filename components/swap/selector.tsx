@@ -1,60 +1,8 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { tokenIcon } from "../providers/icons"
 import type { SwapToken } from "../providers/types"
-
-function uid(t: SwapToken) {
-	return `${t.address}-${t.chainId ?? ""}`
-}
-
-function Avatar({ token, size = 32 }: { token: SwapToken; size?: number }) {
-	const [err, setErr] = useState(false)
-	const colors: Record<string, string> = {
-		E: "#627EEA",
-		U: "#2775CA",
-		B: "#F7931A",
-		S: "#00FFA3",
-		D: "#F5AC37",
-		W: "#627EEA",
-		L: "#2A5ADA",
-		A: "#B6509E",
-		M: "#1AAB9B",
-		C: "#012D72",
-		P: "#E04338",
-		R: "#6B8CEF",
-	}
-	const bg = colors[token.symbol[0]] ?? "#444"
-
-	const logo = token.logo || tokenIcon(token)
-
-	if (logo && !err) {
-		return (
-			<img
-				src={logo}
-				alt=""
-				width={size}
-				height={size}
-				className="shrink-0 rounded-full"
-				onError={() => setErr(true)}
-			/>
-		)
-	}
-
-	return (
-		<span
-			className="flex shrink-0 items-center justify-center rounded-full font-bold"
-			style={{
-				width: size,
-				height: size,
-				background: bg,
-				fontSize: size * 0.38,
-			}}
-		>
-			{token.symbol.slice(0, 2)}
-		</span>
-	)
-}
+import Avatar, { type Category, categoryFor, chainLabel, uid } from "./avatar"
 
 function Modal({
 	tokens,
@@ -70,6 +18,7 @@ function Modal({
 	onClose: () => void
 }) {
 	const [query, setQuery] = useState("")
+	const [category, setCategory] = useState<Category>("all")
 	const inputRef = useRef<HTMLInputElement>(null)
 
 	useEffect(() => {
@@ -92,14 +41,17 @@ function Modal({
 		const q = query.toLowerCase().trim()
 		return tokens.filter((t) => {
 			if (t.address === exclude && t.chainId === selected.chainId) return false
-			if (!q) return true
-			return (
-				t.symbol.toLowerCase().includes(q) ||
-				t.name.toLowerCase().includes(q) ||
-				t.address.toLowerCase().includes(q)
-			)
+			if (q) {
+				return (
+					t.symbol.toLowerCase().includes(q) ||
+					t.name.toLowerCase().includes(q) ||
+					t.address.toLowerCase().includes(q)
+				)
+			}
+			if (category === "all") return true
+			return categoryFor(t.symbol).includes(category)
 		})
-	}, [tokens, query, exclude, selected.chainId])
+	}, [tokens, query, category, exclude, selected.chainId])
 
 	const popular = useMemo(() => {
 		const seen = new Set<string>()
@@ -157,131 +109,152 @@ function Modal({
 					</button>
 				</div>
 
-				<div className="px-4 pt-4 md:px-5">
-					<div className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3.5 md:py-3">
-						<svg
-							aria-hidden="true"
-							width="16"
-							height="16"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							strokeWidth="2"
-							className="shrink-0 text-white/20"
-						>
-							<circle cx="11" cy="11" r="8" />
-							<path d="M21 21l-4.3-4.3" />
-						</svg>
-						<input
-							ref={inputRef}
-							type="text"
-							value={query}
-							onChange={(e) => setQuery(e.target.value)}
-							placeholder="search by token or address"
-							className="w-full bg-transparent text-base text-white outline-none placeholder:text-white/20 md:text-sm"
-						/>
-						{query && (
-							<button
-								type="button"
-								onClick={() => setQuery("")}
-								className="text-white/20 hover:text-white/40"
-							>
-								<svg
-									aria-hidden="true"
-									width="14"
-									height="14"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-								>
-									<path d="M18 6L6 18M6 6l12 12" />
-								</svg>
-							</button>
-						)}
-					</div>
-				</div>
+				<Search query={query} onChange={setQuery} inputRef={inputRef} />
 
 				{!query && (
-					<div className="flex flex-wrap gap-1.5 px-4 pt-3 md:px-5">
-						{popular.map((t) => (
-							<button
-								key={uid(t)}
-								type="button"
-								onClick={() => pick(t)}
-								className="flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white md:px-2.5 md:py-1.5"
-							>
-								<Avatar token={t} size={18} />
-								{t.symbol}
-							</button>
-						))}
-					</div>
+					<>
+						<div className="flex gap-1.5 px-4 pt-3 md:px-5">
+							{(["all", "popular", "defi", "stablecoins"] as Category[]).map((cat) => (
+								<button
+									key={cat}
+									type="button"
+									onClick={() => setCategory(cat)}
+									className={`rounded-full border border-white/[0.06] px-3 py-1.5 text-xs font-medium transition-colors ${
+										category === cat
+											? "bg-white/[0.06] text-white"
+											: "bg-white/[0.03] text-white/50 hover:bg-white/[0.06] hover:text-white/70"
+									}`}
+								>
+									{cat}
+								</button>
+							))}
+						</div>
+
+						<div className="flex flex-wrap gap-1.5 px-4 pt-3 md:px-5">
+							{popular.map((t) => (
+								<button
+									key={uid(t)}
+									type="button"
+									onClick={() => pick(t)}
+									className="flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white md:px-2.5 md:py-1.5"
+								>
+									<Avatar token={t} size={18} />
+									{t.symbol}
+								</button>
+							))}
+						</div>
+					</>
 				)}
 
-				<div className="mt-3 min-h-0 flex-1 overflow-y-auto border-t border-white/[0.04] px-2 py-2 md:max-h-72">
-					{filtered.length === 0 && (
-						<div className="py-8 text-center text-sm text-white/20">no tokens found</div>
-					)}
-					{filtered.map((t) => {
-						const active = t.address === selected.address && t.chainId === selected.chainId
-						return (
-							<button
-								key={uid(t)}
-								type="button"
-								onClick={() => pick(t)}
-								className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors md:py-2.5 ${
-									active
-										? "bg-white/[0.06] text-white"
-										: "text-white/60 hover:bg-white/[0.03] hover:text-white"
-								}`}
-							>
-								<Avatar token={t} size={36} />
-								<div className="min-w-0 flex-1">
-									<div className="flex items-center gap-2">
-										<span className="text-sm font-medium">{t.symbol}</span>
-										{t.chainId && (
-											<span className="rounded bg-white/[0.04] px-1.5 py-0.5 text-[9px] text-white/20">
-												{chainLabel(t.chainId)}
-											</span>
-										)}
-									</div>
-									<span className="block truncate text-[11px] text-white/25">{t.name}</span>
-								</div>
-								{active && (
-									<svg
-										aria-hidden="true"
-										width="16"
-										height="16"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="2"
-										className="shrink-0 text-[#BCEC79]"
-									>
-										<path d="M5 13l4 4L19 7" />
-									</svg>
-								)}
-							</button>
-						)
-					})}
-				</div>
+				<TokenList tokens={filtered} selected={selected} onPick={pick} />
 			</div>
 		</div>
 	)
 }
 
-function chainLabel(id: number | string): string {
-	const labels: Record<string, string> = {
-		"1": "eth",
-		"10": "opt",
-		"56": "bsc",
-		"137": "pol",
-		"8453": "base",
-		"42161": "arb",
-		"43114": "avax",
-		"7565164": "sol",
-	}
-	return labels[id.toString()] ?? ""
+function Search({
+	query,
+	onChange,
+	inputRef,
+}: { query: string; onChange: (v: string) => void; inputRef: React.RefObject<HTMLInputElement | null> }) {
+	return (
+		<div className="px-4 pt-4 md:px-5">
+			<div className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3.5 md:py-3">
+				<svg
+					aria-hidden="true"
+					width="16"
+					height="16"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="2"
+					className="shrink-0 text-white/20"
+				>
+					<circle cx="11" cy="11" r="8" />
+					<path d="M21 21l-4.3-4.3" />
+				</svg>
+				<input
+					ref={inputRef}
+					type="text"
+					value={query}
+					onChange={(e) => onChange(e.target.value)}
+					placeholder="search by token or address"
+					className="w-full bg-transparent text-base text-white outline-none placeholder:text-white/20 md:text-sm"
+				/>
+				{query && (
+					<button type="button" onClick={() => onChange("")} className="text-white/20 hover:text-white/40">
+						<svg
+							aria-hidden="true"
+							width="14"
+							height="14"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+						>
+							<path d="M18 6L6 18M6 6l12 12" />
+						</svg>
+					</button>
+				)}
+			</div>
+		</div>
+	)
+}
+
+function TokenList({
+	tokens,
+	selected,
+	onPick,
+}: { tokens: SwapToken[]; selected: SwapToken; onPick: (t: SwapToken) => void }) {
+	return (
+		<div className="mt-3 min-h-0 flex-1 overflow-y-auto border-t border-white/[0.04] px-2 py-2 md:max-h-72">
+			{tokens.length === 0 && (
+				<div className="py-8 text-center text-sm text-white/20">no tokens found</div>
+			)}
+			{tokens.map((t) => {
+				const active = t.address === selected.address && t.chainId === selected.chainId
+				return (
+					<button
+						key={uid(t)}
+						type="button"
+						onClick={() => onPick(t)}
+						className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors md:py-2.5 ${
+							active
+								? "bg-white/[0.06] text-white"
+								: "text-white/60 hover:bg-white/[0.03] hover:text-white"
+						}`}
+					>
+						<Avatar token={t} size={36} />
+						<div className="min-w-0 flex-1">
+							<div className="flex items-center gap-2">
+								<span className="text-sm font-medium">{t.symbol}</span>
+								{t.chainId && (
+									<span className="rounded bg-white/[0.04] px-1.5 py-0.5 text-[9px] text-white/20">
+										{chainLabel(t.chainId)}
+									</span>
+								)}
+							</div>
+							<span className="block truncate text-[11px] text-white/25">{t.name}</span>
+						</div>
+						{active && (
+							<svg
+								aria-hidden="true"
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2"
+								className="shrink-0 text-[#BCEC79]"
+							>
+								<path d="M5 13l4 4L19 7" />
+							</svg>
+						)}
+					</button>
+				)
+			})}
+		</div>
+	)
 }
 
 export default function Selector({
