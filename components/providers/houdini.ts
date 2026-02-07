@@ -32,35 +32,40 @@ const POPULAR: SwapToken[] = [
 	{ address: "MATIC", symbol: "MATIC", decimals: 18, name: "Polygon" },
 ].map((t) => ({ ...t, logo: t.logo || tokenIcon(t) }))
 
+function amount(data: Record<string, unknown>): string | null {
+	const v = data.amountOut ?? data.estimated_amount ?? data.amount_out
+	return v != null ? String(v) : null
+}
+
 export const houdini: ProviderModule = {
 	tokens: () => POPULAR,
 
-	quote: async ({ input, output, amount }) => {
-		const n = Number.parseFloat(amount)
+	quote: async ({ input, output, amount: raw }) => {
+		const n = Number.parseFloat(raw)
 		if (!n || n <= 0) return null
 
 		const params = new URLSearchParams({
 			from: input.symbol,
 			to: output.symbol,
-			amount: amount,
+			amount: raw,
 		})
 
 		const res = await fetch(`/api/houdini?action=quote&${params}`)
 		if (!res.ok) return null
+
 		const data = await res.json()
+		const out = amount(data)
+		if (!out) return null
 
-		if (!data.estimated_amount) return null
-
-		const outputAmount = data.estimated_amount.toString()
-		const inputNum = Number.parseFloat(amount)
-		const outputNum = Number.parseFloat(outputAmount)
+		const inputNum = Number.parseFloat(raw)
+		const outputNum = Number.parseFloat(out)
 
 		return {
 			provider: "houdini",
 			input,
 			output,
-			inputAmount: amount,
-			outputAmount,
+			inputAmount: raw,
+			outputAmount: out,
 			rate: inputNum > 0 ? outputNum / inputNum : 0,
 			route: "houdini privacy route",
 			_raw: data,
@@ -68,24 +73,34 @@ export const houdini: ProviderModule = {
 	},
 
 	swap: async ({ quote, sender }) => {
-		const params = new URLSearchParams({
-			from: quote.input.symbol,
-			to: quote.output.symbol,
-			amount: quote.inputAmount,
-			address: sender,
+		const res = await fetch("/api/houdini?action=exchange", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				from: quote.input.symbol,
+				to: quote.output.symbol,
+				amount: quote.inputAmount,
+				addressTo: sender,
+				anonymous: true,
+			}),
 		})
 
-		const res = await fetch(`/api/houdini?action=exchange&${params}`)
 		if (!res.ok) return { status: "error", message: "exchange failed" }
 		const data = await res.json()
 
-		if (!data.id) return { status: "error", message: "no exchange id" }
+		const id = data.houdiniId || data.id
+		if (!id) return { status: "error", message: "no exchange id" }
+
+		const deposit = data.senderAddress || data.payinAddress || ""
+		const eta = data.eta ? `${data.eta}m` : ""
 
 		return {
 			status: "success" as const,
-			hash: data.id,
-			message: `send ${quote.inputAmount} ${quote.input.symbol} to ${data.payinAddress}`,
-			explorer: data.id,
+			hash: id,
+			message: deposit
+				? `send ${quote.inputAmount} ${quote.input.symbol} to ${deposit}${eta ? ` (${eta})` : ""}`
+				: id,
+			explorer: id,
 		}
 	},
 }
