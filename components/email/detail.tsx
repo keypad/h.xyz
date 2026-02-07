@@ -1,7 +1,7 @@
 "use client"
 
 import { useEmail } from "@/components/email/context"
-import { ArrowLeftIcon } from "@/components/email/icons"
+import { ArrowLeftIcon, ClipIcon } from "@/components/email/icons"
 
 export default function Detail() {
 	const { selected, emails, setSelected, reply, forward, toggleStar, trash } = useEmail()
@@ -61,6 +61,12 @@ export default function Detail() {
 				<h3 className="mt-2 text-[15px] font-medium text-white/80">{active.subject}</h3>
 			</div>
 			<div className="flex-1 overflow-y-auto px-6 py-6">
+				{active.attachment && (
+					<div className="mb-4 flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2">
+						<ClipIcon className="text-white/25" />
+						<span className="font-mono text-[11px] text-white/30">{active.attachment}</span>
+					</div>
+				)}
 				<div className="whitespace-pre-line text-[13px] leading-[1.8] text-white/40">
 					{active.body}
 				</div>

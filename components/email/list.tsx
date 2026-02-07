@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import { useEmail } from "@/components/email/context"
 import Empty from "@/components/email/empty"
-import { LockIcon } from "@/components/email/icons"
+import { ClipIcon, LockIcon } from "@/components/email/icons"
 
 export default function List() {
 	const { filtered, selected, setSelected, markRead, folder, search } = useEmail()
@@ -54,6 +54,7 @@ export default function List() {
 									<path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
 								</svg>
 							)}
+							{email.attachment && <ClipIcon className="text-white/15" />}
 							{email.encrypted && <LockIcon className="text-white/10" />}
 							<span className="text-[11px] text-white/15">{email.time}</span>
 						</div>

@@ -13,6 +13,7 @@ export type Email = {
 	body: string
 	quote?: string
 	after?: string
+	attachment?: string
 }
 
 export type Folder = {
@@ -86,6 +87,7 @@ export const emails: Email[] = [
 		starred: false,
 		encrypted: true,
 		body: "hi,\n\nwe've identified a potential vulnerability in the latest consensus client update (v4.2.1). all validator operators should update to v4.2.2 immediately.\n\nthis patch addresses a critical edge case in block attestation that could lead to incorrect finality under specific network conditions.\n\nplease update your nodes at your earliest convenience.\n\n— ethereum foundation security team",
+		attachment: "advisory-2026-003.txt",
 	},
 	{
 		id: 3,
@@ -212,6 +214,7 @@ export const emails: Email[] = [
 		starred: true,
 		encrypted: true,
 		body: "here's the full spec for the surplus distribution model.\n\nkey changes from v1:\n— proportional distribution instead of flat\n— 72h settlement window\n— retroactive rebates for high-volume traders\n\ni've attached the simulation results. the new model captures 40% more surplus while keeping gas costs flat.\n\nlet me know what you think.\n\n— bob",
+		attachment: "surplus-model-v2.pdf",
 	},
 	{
 		id: 12,
