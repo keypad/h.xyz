@@ -125,3 +125,9 @@ body {
 		opacity: 1;
 	}
 }
+
+@keyframes scroll {
+	to {
+		transform: translateX(-50%);
+	}
+}

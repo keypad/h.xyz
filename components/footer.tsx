@@ -55,7 +55,6 @@ const marquee = Array(12).fill("h").join(" \u00b7 ")
 export default function Footer() {
 	return (
 		<footer className="border-t border-white/5 text-white">
-			<style>{`@keyframes scroll{to{transform:translateX(-50%)}}`}</style>
 			<div className="flex flex-col justify-between gap-12 px-6 pt-16 pb-12 md:flex-row md:px-20">
 				<div>
 					<Ghost className="h-6 w-auto text-white" />
