@@ -27,6 +27,7 @@ export function PayPanel({
 					type="text"
 					inputMode="decimal"
 					value={amount}
+					onFocus={(e) => e.target.select()}
 					onChange={(e) => {
 						let v = e.target.value.replace(/[^0-9.]/g, "")
 						if (v.split(".").length > 2) v = v.slice(0, v.lastIndexOf("."))
