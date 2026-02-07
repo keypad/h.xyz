@@ -50,7 +50,11 @@ export function WalletContextProvider({
 				address: sol.publicKey?.toBase58() ?? null,
 				connected: sol.connected,
 				connecting: sol.connecting,
-				connect: () => sol.select("Phantom" as any),
+				connect: () => {
+					if (sol.wallets.length > 0) {
+						sol.select(sol.wallets[0].adapter.name)
+					}
+				},
 				disconnect: () => sol.disconnect(),
 				signer: sol,
 			}
@@ -62,8 +66,11 @@ export function WalletContextProvider({
 			connected: evm.isConnected,
 			connecting: evmConnecting,
 			connect: () => {
-				const injected = connectors.find((c) => c.id === "injected")
-				if (injected) evmConnect({ connector: injected })
+				const connector =
+					connectors.find((c) => c.id === "injected") ||
+					connectors.find((c) => c.type === "injected") ||
+					connectors[0]
+				if (connector) evmConnect({ connector })
 			},
 			disconnect: () => evmDisconnect(),
 			signer: walletClient ?? null,
