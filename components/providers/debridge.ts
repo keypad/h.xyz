@@ -20,6 +20,13 @@ const TOKENS: SwapToken[] = [
 		chainId: 1,
 	},
 	{
+		address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+		symbol: "USDC",
+		decimals: 6,
+		name: "USDC (arbitrum)",
+		chainId: 42161,
+	},
+	{
 		address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
 		symbol: "USDC",
 		decimals: 6,
@@ -34,11 +41,11 @@ const TOKENS: SwapToken[] = [
 		chainId: 42161,
 	},
 	{
-		address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-		symbol: "USDC",
+		address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+		symbol: "USDT",
 		decimals: 6,
-		name: "USDC (arbitrum)",
-		chainId: 42161,
+		name: "USDT (ethereum)",
+		chainId: 1,
 	},
 	{
 		address: "0x0000000000000000000000000000000000000000",
@@ -54,6 +61,41 @@ const TOKENS: SwapToken[] = [
 		name: "USDC (base)",
 		chainId: 8453,
 	},
+	{
+		address: "0x0000000000000000000000000000000000000000",
+		symbol: "ETH",
+		decimals: 18,
+		name: "ETH (optimism)",
+		chainId: 10,
+	},
+	{
+		address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+		symbol: "USDC",
+		decimals: 6,
+		name: "USDC (optimism)",
+		chainId: 10,
+	},
+	{
+		address: "0x0000000000000000000000000000000000000000",
+		symbol: "BNB",
+		decimals: 18,
+		name: "BNB (bsc)",
+		chainId: 56,
+	},
+	{
+		address: "0x0000000000000000000000000000000000000000",
+		symbol: "MATIC",
+		decimals: 18,
+		name: "MATIC (polygon)",
+		chainId: 137,
+	},
+	{
+		address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+		symbol: "USDC",
+		decimals: 6,
+		name: "USDC (polygon)",
+		chainId: 137,
+	},
 ]
 
 export const debridge: ProviderModule = {
@@ -65,7 +107,7 @@ export const debridge: ProviderModule = {
 		const smallAmount = toSmallest(amount, input.decimals)
 		if (smallAmount === "0") return null
 
-		if (srcChainId === dstChainId && input.address === output.address) return null
+		if (srcChainId === dstChainId) return null
 
 		const params = new URLSearchParams({
 			srcChainId: srcChainId.toString(),
