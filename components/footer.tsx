@@ -14,6 +14,7 @@ const links = {
 		{ label: "twitter", href: "https://twitter.com/hdotxyz", external: true },
 	],
 	legal: [
+		{ label: "about", href: "/about" },
 		{ label: "privacy", href: "/privacy" },
 		{ label: "terms", href: "/terms" },
 	],
