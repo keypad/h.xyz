@@ -1,7 +1,260 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import type { SwapToken } from "../providers/types"
+
+function uid(t: SwapToken) {
+	return `${t.address}-${t.chainId ?? ""}`
+}
+
+function Avatar({ token, size = 32 }: { token: SwapToken; size?: number }) {
+	const colors: Record<string, string> = {
+		E: "#627EEA",
+		U: "#2775CA",
+		B: "#F7931A",
+		S: "#00FFA3",
+		D: "#F5AC37",
+		W: "#627EEA",
+		L: "#2A5ADA",
+		A: "#B6509E",
+		M: "#1AAB9B",
+		C: "#012D72",
+		P: "#E04338",
+		R: "#6B8CEF",
+	}
+	const bg = colors[token.symbol[0]] ?? "#444"
+	return (
+		<span
+			className="flex shrink-0 items-center justify-center rounded-full font-bold"
+			style={{
+				width: size,
+				height: size,
+				background: bg,
+				fontSize: size * 0.38,
+			}}
+		>
+			{token.symbol.slice(0, 2)}
+		</span>
+	)
+}
+
+function Modal({
+	tokens,
+	selected,
+	exclude,
+	onSelect,
+	onClose,
+}: {
+	tokens: SwapToken[]
+	selected: SwapToken
+	exclude?: string
+	onSelect: (t: SwapToken) => void
+	onClose: () => void
+}) {
+	const [query, setQuery] = useState("")
+	const inputRef = useRef<HTMLInputElement>(null)
+
+	useEffect(() => {
+		inputRef.current?.focus()
+	}, [])
+
+	useEffect(() => {
+		const handler = (e: KeyboardEvent) => {
+			if (e.key === "Escape") onClose()
+		}
+		document.addEventListener("keydown", handler)
+		return () => document.removeEventListener("keydown", handler)
+	}, [onClose])
+
+	const filtered = useMemo(() => {
+		const q = query.toLowerCase().trim()
+		return tokens.filter((t) => {
+			if (t.address === exclude && t.chainId === selected.chainId) return false
+			if (!q) return true
+			return (
+				t.symbol.toLowerCase().includes(q) ||
+				t.name.toLowerCase().includes(q) ||
+				t.address.toLowerCase().includes(q)
+			)
+		})
+	}, [tokens, query, exclude, selected.chainId])
+
+	const popular = useMemo(() => {
+		const seen = new Set<string>()
+		return tokens
+			.filter((t) => {
+				if (seen.has(t.symbol)) return false
+				seen.add(t.symbol)
+				return true
+			})
+			.slice(0, 8)
+	}, [tokens])
+
+	const pick = (t: SwapToken) => {
+		onSelect(t)
+		onClose()
+	}
+
+	return (
+		<div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh]">
+			<div
+				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+				onClick={onClose}
+				onKeyDown={(e) => e.key === "Escape" && onClose()}
+				role="button"
+				tabIndex={-1}
+			/>
+			<div className="relative w-full max-w-md rounded-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl">
+				<div className="flex items-start justify-between p-5 pb-0">
+					<div>
+						<h3 className="text-base font-semibold text-white">select a token</h3>
+						<p className="mt-1 text-[11px] text-white/30">search by name or address</p>
+					</div>
+					<button
+						type="button"
+						onClick={onClose}
+						className="flex h-8 w-8 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/60"
+					>
+						<svg
+							aria-hidden="true"
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+						>
+							<path d="M18 6L6 18M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
+
+				<div className="px-5 pt-4">
+					<div className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3">
+						<svg
+							aria-hidden="true"
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+							className="shrink-0 text-white/20"
+						>
+							<circle cx="11" cy="11" r="8" />
+							<path d="M21 21l-4.3-4.3" />
+						</svg>
+						<input
+							ref={inputRef}
+							type="text"
+							value={query}
+							onChange={(e) => setQuery(e.target.value)}
+							placeholder="search by token or address"
+							className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/20"
+						/>
+						{query && (
+							<button
+								type="button"
+								onClick={() => setQuery("")}
+								className="text-white/20 hover:text-white/40"
+							>
+								<svg
+									aria-hidden="true"
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+								>
+									<path d="M18 6L6 18M6 6l12 12" />
+								</svg>
+							</button>
+						)}
+					</div>
+				</div>
+
+				{!query && (
+					<div className="flex flex-wrap gap-1.5 px-5 pt-3">
+						{popular.map((t) => (
+							<button
+								key={uid(t)}
+								type="button"
+								onClick={() => pick(t)}
+								className="flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.03] px-2.5 py-1.5 text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
+							>
+								<Avatar token={t} size={18} />
+								{t.symbol}
+							</button>
+						))}
+					</div>
+				)}
+
+				<div className="mt-3 max-h-72 overflow-y-auto border-t border-white/[0.04] px-2 py-2">
+					{filtered.length === 0 && (
+						<div className="py-8 text-center text-sm text-white/20">no tokens found</div>
+					)}
+					{filtered.map((t) => {
+						const active = t.address === selected.address && t.chainId === selected.chainId
+						return (
+							<button
+								key={uid(t)}
+								type="button"
+								onClick={() => pick(t)}
+								className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+									active
+										? "bg-white/[0.06] text-white"
+										: "text-white/60 hover:bg-white/[0.03] hover:text-white"
+								}`}
+							>
+								<Avatar token={t} size={36} />
+								<div className="min-w-0 flex-1">
+									<div className="flex items-center gap-2">
+										<span className="text-sm font-medium">{t.symbol}</span>
+										{t.chainId && (
+											<span className="rounded bg-white/[0.04] px-1.5 py-0.5 text-[9px] text-white/20">
+												{chainLabel(t.chainId)}
+											</span>
+										)}
+									</div>
+									<span className="block truncate text-[11px] text-white/25">{t.name}</span>
+								</div>
+								{active && (
+									<svg
+										aria-hidden="true"
+										width="16"
+										height="16"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+										className="shrink-0 text-[#BCEC79]"
+									>
+										<path d="M5 13l4 4L19 7" />
+									</svg>
+								)}
+							</button>
+						)
+					})}
+				</div>
+			</div>
+		</div>
+	)
+}
+
+function chainLabel(id: number | string): string {
+	const labels: Record<string, string> = {
+		"1": "eth",
+		"10": "opt",
+		"56": "bsc",
+		"137": "pol",
+		"8453": "base",
+		"42161": "arb",
+		"43114": "avax",
+		"7565164": "sol",
+	}
+	return labels[id.toString()] ?? ""
+}
 
 export default function Selector({
 	token,
@@ -15,28 +268,15 @@ export default function Selector({
 	exclude?: string
 }) {
 	const [open, setOpen] = useState(false)
-	const ref = useRef<HTMLDivElement>(null)
-
-	useEffect(() => {
-		const handler = (e: MouseEvent) => {
-			if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
-		}
-		document.addEventListener("mousedown", handler)
-		return () => document.removeEventListener("mousedown", handler)
-	}, [])
-
-	const filtered = tokens.filter((t) => !(t.address === exclude && t.chainId === token.chainId))
 
 	return (
-		<div ref={ref} className="relative">
+		<>
 			<button
 				type="button"
-				onClick={() => setOpen(!open)}
+				onClick={() => setOpen(true)}
 				className="flex items-center gap-2 rounded-full bg-white/[0.06] py-1.5 pr-2.5 pl-2 text-sm font-medium text-white transition-colors hover:bg-white/[0.09]"
 			>
-				<span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[9px] font-bold">
-					{token.symbol[0]}
-				</span>
+				<Avatar token={token} size={20} />
 				{token.symbol}
 				<svg
 					aria-hidden="true"
@@ -46,38 +286,20 @@ export default function Selector({
 					fill="none"
 					stroke="currentColor"
 					strokeWidth="2"
-					className={`text-white/30 transition-transform ${open ? "rotate-180" : ""}`}
+					className="text-white/30"
 				>
 					<path d="M6 9l6 6 6-6" />
 				</svg>
 			</button>
 			{open && (
-				<div className="absolute right-0 z-10 mt-2 max-h-64 w-44 overflow-y-auto rounded-xl border border-white/[0.06] bg-[#1e1c1a] p-1.5 shadow-2xl">
-					{filtered.map((t) => (
-						<button
-							key={`${t.symbol}-${t.chainId ?? ""}`}
-							type="button"
-							onClick={() => {
-								onSelect(t)
-								setOpen(false)
-							}}
-							className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
-								t.address === token.address && t.chainId === token.chainId
-									? "bg-white/[0.06] text-white"
-									: "text-white/50 hover:bg-white/[0.03] hover:text-white"
-							}`}
-						>
-							<span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/10 text-[9px] font-bold">
-								{t.symbol[0]}
-							</span>
-							<span className="truncate">{t.symbol}</span>
-							{t.name && (
-								<span className="ml-auto truncate text-[10px] text-white/20">{t.name}</span>
-							)}
-						</button>
-					))}
-				</div>
+				<Modal
+					tokens={tokens}
+					selected={token}
+					exclude={exclude}
+					onSelect={onSelect}
+					onClose={() => setOpen(false)}
+				/>
 			)}
-		</div>
+		</>
 	)
 }
