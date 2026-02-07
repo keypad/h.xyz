@@ -27,7 +27,11 @@ export function PayPanel({
 					type="text"
 					inputMode="decimal"
 					value={amount}
-					onChange={(e) => onAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+					onChange={(e) => {
+						let v = e.target.value.replace(/[^0-9.]/g, "")
+						if (v.split(".").length > 2) v = v.slice(0, v.lastIndexOf("."))
+						onAmount(v)
+					}}
 					className="w-0 min-w-0 flex-1 bg-transparent text-2xl font-medium text-white outline-none placeholder:text-white/20 md:text-3xl"
 					placeholder="0"
 				/>
