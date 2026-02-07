@@ -1,8 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 const BASE = "https://api-partner.houdiniswap.com"
-const RAW = process.env.HOUDINI_API_KEY || ""
-const KEY = RAW.includes(":") ? RAW.split(":")[0] : RAW
+const KEY = process.env.HOUDINI_API_KEY || ""
 
 const STRIP = ["x-forwarded-for", "x-real-ip", "cf-connecting-ip", "x-vercel-forwarded-for"]
 
@@ -35,7 +34,8 @@ export async function GET(req: NextRequest) {
 	}
 
 	try {
-		const upstream = await fetch(`${BASE}${endpoint}?${params}`, {
+		const qs = params.toString()
+		const upstream = await fetch(`${BASE}${endpoint}${qs ? `?${qs}` : ""}`, {
 			headers: headers(),
 			cache: "no-store",
 		})
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
 		const upstream = await fetch(`${BASE}/exchange`, {
 			method: "POST",
-			headers: headers(),
+			headers: { ...headers(), "Content-Type": "application/json" },
 			body: JSON.stringify({
 				amount: Number(body.amount),
 				from: body.from,
