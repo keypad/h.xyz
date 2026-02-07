@@ -1,7 +1,5 @@
 import type { ProviderModule, Quote, SwapToken } from "./types"
 
-const BASE = "https://api.jup.ag/swap/v1"
-
 const TOKENS: SwapToken[] = [
 	{
 		address: "So11111111111111111111111111111111111111112",
@@ -64,11 +62,14 @@ export const jupiter: ProviderModule = {
 			outputMint: output.address,
 			amount: lamports,
 			slippageBps: "50",
+			restrictIntermediateTokens: "true",
 		})
 
-		const res = await fetch(`${BASE}/quote?${params}`)
+		const res = await fetch(`/api/jupiter?${params}`)
 		if (!res.ok) return null
 		const data = await res.json()
+
+		if (!data.outAmount) return null
 
 		const outputAmount = (Number(data.outAmount) / 10 ** output.decimals).toString()
 		const inputNum = Number.parseFloat(amount)
@@ -91,7 +92,7 @@ export const jupiter: ProviderModule = {
 		const raw = (quote as any)._raw
 		if (!raw) return { status: "error", message: "no quote data" }
 
-		const res = await fetch(`${BASE}/swap`, {
+		const res = await fetch("/api/jupiter", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
