@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useState } from "react"
 import { tokenIcon } from "../providers/icons"
 import type { SwapToken } from "../providers/types"
@@ -13,6 +14,7 @@ export function chainLabel(id: number | string): string {
 		"1": "eth",
 		"10": "opt",
 		"56": "bsc",
+		"100": "gno",
 		"137": "pol",
 		"8453": "base",
 		"42161": "arb",
@@ -30,7 +32,20 @@ export function categoryFor(symbol: string): Category[] {
 	if (["eth", "btc", "sol", "wbtc", "weth", "matic"].includes(s)) cats.push("popular")
 	if (["usdc", "usdt", "dai", "busd"].includes(s)) cats.push("stablecoins")
 	if (
-		["uni", "aave", "crv", "comp", "mkr", "ldo", "link", "snx", "grt", "cow", "jup", "ray"].includes(s)
+		[
+			"uni",
+			"aave",
+			"crv",
+			"comp",
+			"mkr",
+			"ldo",
+			"link",
+			"snx",
+			"grt",
+			"cow",
+			"jup",
+			"ray",
+		].includes(s)
 	)
 		cats.push("defi")
 	return cats
@@ -58,13 +73,14 @@ export default function Avatar({ token, size = 32 }: { token: SwapToken; size?: 
 
 	if (logo && !err) {
 		return (
-			<img
+			<Image
 				src={logo}
 				alt=""
 				width={size}
 				height={size}
 				className="shrink-0 rounded-full"
 				onError={() => setErr(true)}
+				unoptimized
 			/>
 		)
 	}
