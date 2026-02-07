@@ -32,7 +32,7 @@ export function useShortcuts() {
 				case "Escape":
 					if (mobile || selected) setSelected(null)
 					break
-			case "/":
+				case "/":
 					e.preventDefault()
 					document.querySelector<HTMLInputElement>("[data-search]")?.focus()
 					break
