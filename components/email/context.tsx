@@ -3,10 +3,13 @@
 import { createContext, type ReactNode, useContext, useMemo, useState } from "react"
 import { type Email, emails as initial } from "@/components/email/data"
 
+type Reply = { to: string; subject: string } | null
+
 type State = {
 	folder: string
 	selected: number | null
 	composing: boolean
+	replyTo: Reply
 	search: string
 	mobile: boolean
 	emails: Email[]
@@ -14,6 +17,7 @@ type State = {
 	toggleStar: (id: number) => void
 	send: (to: string, subject: string, body: string) => void
 	trash: (id: number) => void
+	reply: (id: number) => void
 	setFolder: (id: string) => void
 	setSelected: (id: number | null) => void
 	setComposing: (v: boolean) => void
@@ -28,10 +32,16 @@ const Context = createContext<State>(null!)
 export function Provider({ children }: { children: ReactNode }) {
 	const [folder, setFolder] = useState("inbox")
 	const [selected, setSelected] = useState<number | null>(null)
-	const [composing, setComposing] = useState(false)
+	const [composing, rawSetComposing] = useState(false)
 	const [search, setSearch] = useState("")
 	const [mobile, setMobile] = useState(false)
 	const [emails, setEmails] = useState(initial)
+	const [replyTo, setReplyTo] = useState<Reply>(null)
+
+	const setComposing = (v: boolean) => {
+		rawSetComposing(v)
+		if (!v) setReplyTo(null)
+	}
 
 	const markRead = (id: number) =>
 		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, unread: false } : e)))
@@ -65,6 +75,14 @@ export function Provider({ children }: { children: ReactNode }) {
 
 	const trash = (id: number) =>
 		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, folder: "trash" } : e)))
+
+	const reply = (id: number) => {
+		const email = emails.find((e) => e.id === id)
+		if (!email) return
+		const sub = email.subject.startsWith("re: ") ? email.subject : `re: ${email.subject}`
+		setReplyTo({ to: email.from, subject: sub })
+		setComposing(true)
+	}
 
 	const filtered = useMemo(
 		() =>
@@ -100,6 +118,7 @@ export function Provider({ children }: { children: ReactNode }) {
 				folder,
 				selected,
 				composing,
+				replyTo,
 				search,
 				mobile,
 				emails,
@@ -107,6 +126,7 @@ export function Provider({ children }: { children: ReactNode }) {
 				toggleStar,
 				send,
 				trash,
+				reply,
 				setFolder,
 				setSelected,
 				setComposing,

@@ -5,7 +5,7 @@ import { useEmail } from "@/components/email/context"
 import { CloseIcon, LockIcon, SendIcon } from "@/components/email/icons"
 
 export default function Compose() {
-	const { composing, setComposing, send } = useEmail()
+	const { composing, setComposing, send, replyTo } = useEmail()
 	const [to, setTo] = useState("")
 	const [subject, setSubject] = useState("")
 	const [body, setBody] = useState("")
@@ -13,8 +13,13 @@ export default function Compose() {
 	const toRef = useRef<HTMLInputElement>(null)
 
 	useEffect(() => {
-		if (composing) setTimeout(() => toRef.current?.focus(), 50)
-	}, [composing])
+		if (!composing) return
+		if (replyTo) {
+			setTo(replyTo.to)
+			setSubject(replyTo.subject)
+		}
+		setTimeout(() => toRef.current?.focus(), 50)
+	}, [composing, replyTo])
 
 	if (!composing) return null
 
@@ -44,7 +49,7 @@ export default function Compose() {
 				}}
 			>
 				<div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3.5">
-					<span className="text-[13px] font-medium text-white">new message</span>
+					<span className="text-[13px] font-medium text-white">{replyTo ? "reply" : "new message"}</span>
 					<button
 						type="button"
 						onClick={close}
