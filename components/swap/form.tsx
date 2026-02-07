@@ -119,7 +119,19 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 			<div className="mb-3 flex items-center justify-between px-1">
 				<div className="flex items-center gap-2 text-[11px] text-white/20">
 					<LiveDot />
-					{prov?.name}
+					{prov?.url ? (
+						<a
+							href={prov.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							referrerPolicy="no-referrer"
+							className="transition-colors hover:text-white/40"
+						>
+							{prov.name}
+						</a>
+					) : (
+						prov?.name
+					)}
 					{prov?.tag && <span className="text-white/10">· {prov.tag}</span>}
 				</div>
 				<div className="flex items-center gap-2">
