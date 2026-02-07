@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { providers } from "../providers/registry"
 import type { Quote, SwapResult, SwapToken } from "../providers/types"
+import ConnectButton from "../wallet/connect"
 import { useWalletContext } from "../wallet/context"
 import Details from "./details"
 import { fmt, modules } from "./modules"
@@ -24,7 +25,8 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	const [flipped, setFlipped] = useState(false)
 	const timer = useRef<ReturnType<typeof setTimeout>>(null)
 	const refreshKey = useRef(0)
-	const { connected, address, signer, connect, chain } = useWalletContext()
+	const mounted = useRef(false)
+	const { connected, address, signer, chain } = useWalletContext()
 	const { slippage, setSlippage } = useSlippage()
 
 	useEffect(() => {
@@ -64,7 +66,12 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 
 	useEffect(() => {
 		if (timer.current) clearTimeout(timer.current)
-		timer.current = setTimeout(fetchQuote, 500)
+		if (!mounted.current) {
+			mounted.current = true
+			fetchQuote()
+		} else {
+			timer.current = setTimeout(fetchQuote, 200)
+		}
 		return () => {
 			if (timer.current) clearTimeout(timer.current)
 		}
@@ -87,8 +94,17 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	const execute = async () => {
 		if (!quote || !connected || !signer || !address) return
 		setResult({ status: "pending" })
-		const res = await mod.swap({ quote, sender: address, signer, slippage })
-		setResult(res)
+		try {
+			const res = await mod.swap({ quote, sender: address, signer, slippage })
+			setResult(res)
+		} catch (e: any) {
+			const msg = (e?.message ?? "").toLowerCase()
+			if (msg.includes("reject") || msg.includes("denied") || msg.includes("cancel")) {
+				setResult(null)
+			} else {
+				setResult({ status: "error", message: "failed" })
+			}
+		}
 	}
 
 	const prov = providers.find((p) => p.id === providerId)
@@ -161,16 +177,11 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 			<div className="rounded-xl bg-white/[0.03] p-4">
 				<span className="text-[11px] text-white/25">you receive</span>
 				<div className="mt-2 flex items-center justify-between gap-3">
-					{loading ? (
-						<span
-							className="inline-block h-8 w-32 rounded-lg bg-white/[0.06]"
-							style={{ animation: "shimmer 1.5s ease-in-out infinite" }}
-						/>
-					) : (
-						<span className="text-2xl font-medium text-white md:text-3xl">
-							{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "\u2014"}
-						</span>
-					)}
+					<span
+						className={`text-2xl font-medium text-white transition-opacity duration-200 md:text-3xl ${loading ? "opacity-30" : ""}`}
+					>
+						{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "\u2014"}
+					</span>
 					<Selector
 						token={output}
 						tokens={tokenList}
@@ -181,15 +192,19 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 				{error && <div className="mt-2 text-[12px] text-red-400/60">{error}</div>}
 			</div>
 
-			{quote && (
-				<Details
-					quote={quote}
-					input={input}
-					slippage={slippage}
-					chain={chain}
-					color={prov?.color}
-				/>
-			)}
+			<div
+				className={`overflow-hidden transition-all duration-200 ${quote ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}
+			>
+				{quote && (
+					<Details
+						quote={quote}
+						input={input}
+						slippage={slippage}
+						chain={chain}
+						color={prov?.color}
+					/>
+				)}
+			</div>
 
 			{connected ? (
 				<button
@@ -201,13 +216,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 					swap
 				</button>
 			) : (
-				<button
-					type="button"
-					onClick={() => connect(chain)}
-					className="mt-4 w-full rounded-xl bg-[#EC4612] py-3.5 text-sm font-medium text-white transition-all hover:brightness-110 md:py-4"
-				>
-					connect wallet
-				</button>
+				<ConnectButton />
 			)}
 		</div>
 	)

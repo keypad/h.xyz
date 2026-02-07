@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { providers } from "../providers/registry"
 import type { ChainType } from "../providers/types"
 import { WalletContextProvider } from "../wallet/context"
@@ -12,12 +12,23 @@ function chainFor(id: string): ChainType {
 	return p?.chains[0] ?? "evm"
 }
 
+function initial(): string {
+	if (typeof window === "undefined") return "jupiter"
+	const hash = window.location.hash.slice(1)
+	if (providers.some((p) => p.id === hash)) return hash
+	return "jupiter"
+}
+
 export default function Panel() {
-	const [active, setActive] = useState("jupiter")
+	const [active, setActive] = useState(initial)
 	const [chainId, setChainId] = useState(1)
 	const [fading, setFading] = useState(false)
 	const chain = chainFor(active)
 	const chains = chainsFor(active)
+
+	useEffect(() => {
+		window.location.hash = active
+	}, [active])
 
 	const switchTab = (id: string) => {
 		if (id === active) return
@@ -39,9 +50,7 @@ export default function Panel() {
 							type="button"
 							onClick={() => switchTab(p.id)}
 							className={`relative flex-1 whitespace-nowrap rounded-lg px-3 py-2.5 text-xs font-medium transition-colors md:py-2 ${
-								active === p.id
-									? "bg-white/[0.06] text-white"
-									: "text-white/30 hover:text-white/50"
+								active === p.id ? "bg-white/[0.06] text-white" : "text-white/30 hover:text-white/50"
 							}`}
 						>
 							{active === p.id && (
@@ -62,11 +71,8 @@ export default function Panel() {
 				</div>
 			)}
 
-			<div
-				className="mt-4 transition-opacity duration-150"
-				style={{ opacity: fading ? 0 : 1 }}
-			>
-				<SwapForm providerId={active} chainId={chainId} />
+			<div className="mt-4 transition-opacity duration-150" style={{ opacity: fading ? 0 : 1 }}>
+				<SwapForm key={`${active}-${chainId}`} providerId={active} chainId={chainId} />
 			</div>
 		</WalletContextProvider>
 	)
