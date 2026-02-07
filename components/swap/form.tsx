@@ -8,7 +8,7 @@ import { useWalletContext } from "../wallet/context"
 import Details from "./details"
 import { classify, withRetry, withTimeout } from "./errors"
 import { fmt, modules } from "./modules"
-import { FlipButton, PayPanel, ReceivePanel } from "./panels"
+import { FlipButton, PayPanel, ReceivePanel, SwapButton } from "./panels"
 import Refresh from "./refresh"
 import Settings, { useSlippage } from "./settings"
 import Status from "./status"
@@ -116,7 +116,6 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	}
 
 	const prov = providers.find((p) => p.id === providerId)
-	const buttonError = error && error !== "enter an amount"
 
 	return (
 		<div className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-4 md:p-5">
@@ -128,6 +127,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 						<span className="inline-flex h-1.5 w-1.5 rounded-full bg-[#BCEC79]" />
 					</span>
 					{prov?.name}
+					{prov?.tag && <span className="text-white/10">· {prov.tag}</span>}
 				</div>
 				<div className="flex items-center gap-2">
 					{loading && <span className="text-[11px] text-white/20">quoting...</span>}
@@ -176,29 +176,23 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 					/>
 				)}
 			</div>
-			{isHoudini && !destination ? (
-				<input
-					type="text"
-					value={destination}
-					onChange={(e) => setDestination(e.target.value.trim())}
-					placeholder="destination address"
-					className="mt-4 w-full rounded-xl bg-white/[0.06] px-4 py-3.5 text-sm text-white outline-none placeholder:text-white/25 md:py-4"
-				/>
-			) : !isHoudini && !connected ? (
+			{isHoudini ? (
+				<div className="mt-4 flex flex-col gap-2">
+					<input
+						type="text"
+						value={destination}
+						onChange={(e) => setDestination(e.target.value.trim())}
+						placeholder="destination address"
+						className="w-full rounded-xl bg-white/[0.06] px-4 py-3 font-mono text-sm text-white outline-none placeholder:text-white/25"
+					/>
+					<SwapButton disabled={!quote || !destination} error={error} onClick={execute} />
+				</div>
+			) : !connected ? (
 				<ConnectButton />
 			) : (
-				<button
-					type="button"
-					disabled={!quote || !!buttonError}
-					onClick={execute}
-					className={`mt-4 w-full rounded-xl py-3.5 text-sm font-medium transition-all md:py-4 ${
-						buttonError
-							? "bg-white/[0.04] text-white/25"
-							: "bg-[#EC4612] text-white hover:brightness-110 disabled:opacity-30 disabled:hover:brightness-100"
-					}`}
-				>
-					{buttonError || "swap"}
-				</button>
+				<div className="mt-4">
+					<SwapButton disabled={!quote} error={error} onClick={execute} />
+				</div>
 			)}
 		</div>
 	)
