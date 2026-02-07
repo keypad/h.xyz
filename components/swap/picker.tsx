@@ -7,7 +7,11 @@ export function Search({
 	query,
 	onChange,
 	inputRef,
-}: { query: string; onChange: (v: string) => void; inputRef: React.RefObject<HTMLInputElement | null> }) {
+}: {
+	query: string
+	onChange: (v: string) => void
+	inputRef: React.RefObject<HTMLInputElement | null>
+}) {
 	return (
 		<div className="px-4 pt-4 md:px-5">
 			<div className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3.5 md:py-3">
@@ -33,7 +37,11 @@ export function Search({
 					className="w-full bg-transparent text-base text-white outline-none placeholder:text-white/20 md:text-sm"
 				/>
 				{query && (
-					<button type="button" onClick={() => onChange("")} className="text-white/20 hover:text-white/40">
+					<button
+						type="button"
+						onClick={() => onChange("")}
+						className="text-white/20 hover:text-white/40"
+					>
 						<svg
 							aria-hidden="true"
 							width="14"
@@ -56,7 +64,11 @@ export function TokenList({
 	tokens,
 	selected,
 	onPick,
-}: { tokens: SwapToken[]; selected: SwapToken; onPick: (t: SwapToken) => void }) {
+}: {
+	tokens: SwapToken[]
+	selected: SwapToken
+	onPick: (t: SwapToken) => void
+}) {
 	return (
 		<div className="mt-3 min-h-0 flex-1 overflow-y-auto border-t border-white/[0.04] px-2 py-2 md:max-h-72">
 			{tokens.length === 0 && (

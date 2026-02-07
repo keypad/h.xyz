@@ -2,7 +2,12 @@ export function isTransient(error: unknown): boolean {
 	if (error instanceof DOMException && error.name === "AbortError") return true
 	if (error instanceof TypeError && error.message.includes("fetch")) return true
 	const msg = String(error instanceof Error ? error.message : error).toLowerCase()
-	return msg.includes("429") || msg.includes("rate") || msg.includes("timeout") || msg.includes("network")
+	return (
+		msg.includes("429") ||
+		msg.includes("rate") ||
+		msg.includes("timeout") ||
+		msg.includes("network")
+	)
 }
 
 export function classify(error: unknown): string {

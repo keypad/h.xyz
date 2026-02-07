@@ -1,6 +1,6 @@
+import { COW_TOKENS, WETH_BY_CHAIN } from "./tokens/cow"
 import type { ProviderModule, SwapToken } from "./types"
 import { toSmallest } from "./types"
-import { COW_TOKENS, WETH_BY_CHAIN } from "./tokens/cow"
 
 const CHAINS: Record<number, string> = {
 	1: "mainnet",
@@ -57,10 +57,7 @@ export const cow: ProviderModule = {
 		if (!res.ok) return null
 		const data = await res.json()
 
-		const outputAmount = (
-			Number(BigInt(data.quote.buyAmount)) /
-			10 ** output.decimals
-		).toString()
+		const outputAmount = (Number(BigInt(data.quote.buyAmount)) / 10 ** output.decimals).toString()
 		const inputNum = Number.parseFloat(amount)
 		const outputNum = Number.parseFloat(outputAmount)
 

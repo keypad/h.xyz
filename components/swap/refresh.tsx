@@ -12,7 +12,15 @@ export default function Refresh({ onRefresh }: { onRefresh: () => void }) {
 
 	return (
 		<svg width="14" height="14" viewBox="0 0 16 16" className="shrink-0" aria-hidden="true">
-			<circle cx="8" cy="8" r="7" fill="none" stroke="white" strokeOpacity="0.06" strokeWidth="1.5" />
+			<circle
+				cx="8"
+				cy="8"
+				r="7"
+				fill="none"
+				stroke="white"
+				strokeOpacity="0.06"
+				strokeWidth="1.5"
+			/>
 			<circle
 				cx="8"
 				cy="8"

@@ -57,7 +57,12 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		setLoading(true)
 		try {
 			const q = await withRetry(
-				(s) => withTimeout(mod.quote({ input, output, amount, sender: address ?? undefined, slippage }), 10000, s),
+				(s) =>
+					withTimeout(
+						mod.quote({ input, output, amount, sender: address ?? undefined, slippage }),
+						10000,
+						s,
+					),
 				signal,
 			)
 			if (signal.aborted) return
@@ -94,7 +99,11 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		setInput(output)
 		setOutput(prev)
 		if (quote)
-			setAmount(Number.parseFloat(quote.outputAmount).toFixed(6).replace(/\.?0+$/, ""))
+			setAmount(
+				Number.parseFloat(quote.outputAmount)
+					.toFixed(6)
+					.replace(/\.?0+$/, ""),
+			)
 	}
 
 	const execute = async () => {
@@ -145,7 +154,10 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 				token={input}
 				tokens={tokenList}
 				exclude={output.address}
-				onAmount={(v) => { setAmount(v); refreshKey.current++ }}
+				onAmount={(v) => {
+					setAmount(v)
+					refreshKey.current++
+				}}
 				onSelect={setInput}
 			/>
 			<FlipButton flipped={flipped} onFlip={flip} />
@@ -158,8 +170,18 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 				exclude={input.address}
 				onSelect={setOutput}
 			/>
-			<div className={`overflow-hidden transition-all duration-200 ${quote ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}>
-				{quote && <Details quote={quote} input={input} slippage={slippage} chain={chain} color={prov?.color} />}
+			<div
+				className={`overflow-hidden transition-all duration-200 ${quote ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}
+			>
+				{quote && (
+					<Details
+						quote={quote}
+						input={input}
+						slippage={slippage}
+						chain={chain}
+						color={prov?.color}
+					/>
+				)}
 			</div>
 			{connected ? (
 				<button

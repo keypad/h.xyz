@@ -57,5 +57,10 @@ export type ProviderModule = {
 		sender?: string
 		slippage?: number
 	}) => Promise<Quote | null>
-	swap: (params: { quote: Quote; sender: string; signer: any; slippage?: number }) => Promise<SwapResult>
+	swap: (params: {
+		quote: Quote
+		sender: string
+		signer: any
+		slippage?: number
+	}) => Promise<SwapResult>
 }

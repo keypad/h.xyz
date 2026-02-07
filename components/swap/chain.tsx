@@ -41,9 +41,7 @@ export default function ChainSelector({
 					type="button"
 					onClick={() => onChange(c.id)}
 					className={`rounded-lg px-2.5 py-1.5 text-[11px] font-medium transition-colors ${
-						active === c.id
-							? "bg-white/[0.06] text-white"
-							: "text-white/30 hover:text-white/50"
+						active === c.id ? "bg-white/[0.06] text-white" : "text-white/30 hover:text-white/50"
 					}`}
 				>
 					{c.name}

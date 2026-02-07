@@ -1,5 +1,3 @@
-import type { ProviderModule, SwapToken } from "./types"
-import { toSmallest } from "./types"
 import {
 	EXPLORER_BY_CHAIN,
 	QUOTER_BY_CHAIN,
@@ -8,6 +6,8 @@ import {
 	UNI_TOKENS,
 	WETH_BY_CHAIN,
 } from "./tokens/uniswap"
+import type { ProviderModule, SwapToken } from "./types"
+import { toSmallest } from "./types"
 
 function isNative(token: SwapToken): boolean {
 	return token.address === "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
@@ -122,9 +122,7 @@ export const uniswap: ProviderModule = {
 
 		const tolerance = 1 - (slippagePct ?? 0.5) / 100
 		const minOut = BigInt(
-			Math.floor(
-				Number.parseFloat(quote.outputAmount) * tolerance * 10 ** quote.output.decimals,
-			),
+			Math.floor(Number.parseFloat(quote.outputAmount) * tolerance * 10 ** quote.output.decimals),
 		)
 
 		const calldata = encodeFunctionData({
