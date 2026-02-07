@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { SwapToken } from "../providers/types"
+import { useTrap } from "../trap"
 import Avatar, { type Category, categoryFor, uid } from "./avatar"
 import { Search, TokenList } from "./picker"
 
@@ -22,6 +23,8 @@ export default function Modal({
 	const [category, setCategory] = useState<Category>("all")
 	const [focus, setFocus] = useState(0)
 	const inputRef = useRef<HTMLInputElement>(null)
+	const dialogRef = useRef<HTMLDivElement>(null)
+	useTrap(dialogRef)
 
 	useEffect(() => {
 		inputRef.current?.focus()
@@ -90,6 +93,7 @@ export default function Modal({
 
 	return (
 		<div
+			ref={dialogRef}
 			className="fixed inset-0 z-50 flex items-end justify-center md:items-start md:pt-[10vh]"
 			style={{ animation: "fadein 200ms ease-out" }}
 		>

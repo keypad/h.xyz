@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useEmail } from "@/components/email/context"
 import { CloseIcon, LockIcon, SendIcon } from "@/components/email/icons"
+import { useTrap } from "@/components/trap"
 
 export default function Compose() {
 	const { composing, setComposing, send, draft } = useEmail()
@@ -12,6 +13,8 @@ export default function Compose() {
 
 	const toRef = useRef<HTMLInputElement>(null)
 	const bodyRef = useRef<HTMLTextAreaElement>(null)
+	const dialogRef = useRef<HTMLDivElement>(null)
+	useTrap(dialogRef)
 
 	useEffect(() => {
 		if (!composing) return
@@ -46,6 +49,7 @@ export default function Compose() {
 				onClick={close}
 			/>
 			<div
+				ref={dialogRef}
 				className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl animate-[slideup_250ms_ease-out]"
 				onKeyDown={(e) => {
 					if (e.key === "Escape") close()
