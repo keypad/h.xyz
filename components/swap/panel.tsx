@@ -12,19 +12,17 @@ function chainFor(id: string): ChainType {
 	return p?.chains[0] ?? "evm"
 }
 
-function initial(): string {
-	if (typeof window === "undefined") return "jupiter"
-	const hash = window.location.hash.slice(1)
-	if (providers.some((p) => p.id === hash)) return hash
-	return "jupiter"
-}
-
 export default function Panel() {
-	const [active, setActive] = useState(initial)
+	const [active, setActive] = useState("jupiter")
 	const [chainId, setChainId] = useState(1)
 	const [fading, setFading] = useState(false)
 	const chain = chainFor(active)
 	const chains = chainsFor(active)
+
+	useEffect(() => {
+		const hash = window.location.hash.slice(1)
+		if (hash && providers.some((p) => p.id === hash)) setActive(hash)
+	}, [])
 
 	useEffect(() => {
 		window.location.hash = active
