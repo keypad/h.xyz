@@ -1,3 +1,4 @@
+import { tokenIcon } from "./icons"
 import type { ProviderModule, SwapToken } from "./types"
 import { toSmallest } from "./types"
 
@@ -95,6 +96,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 18,
 		name: "BNB (bsc)",
 		chainId: 56,
+		logo: tokenIcon({ address: "", symbol: "BNB", decimals: 18, name: "" }),
 	},
 	{
 		address: "0x0000000000000000000000000000000000000000",
@@ -102,6 +104,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 18,
 		name: "MATIC (polygon)",
 		chainId: 137,
+		logo: tokenIcon({ address: "", symbol: "MATIC", decimals: 18, name: "" }),
 	},
 	{
 		address: "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
