@@ -1,4 +1,5 @@
-import type { ProviderModule, Quote, SwapToken } from "./types"
+import type { ProviderModule, SwapToken } from "./types"
+import { toSmallest } from "./types"
 
 const CHAINS = [
 	{ id: 1, name: "ethereum" },
@@ -10,77 +11,61 @@ const CHAINS = [
 	{ id: 7565164, name: "solana" },
 ]
 
-const EVM_TOKENS: SwapToken[] = [
+const TOKENS: SwapToken[] = [
 	{
 		address: "0x0000000000000000000000000000000000000000",
 		symbol: "ETH",
 		decimals: 18,
-		name: "Ether",
+		name: "ETH (ethereum)",
 		chainId: 1,
 	},
 	{
 		address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
 		symbol: "USDC",
 		decimals: 6,
-		name: "USD Coin",
-		chainId: 1,
-	},
-	{
-		address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
-		symbol: "USDT",
-		decimals: 6,
-		name: "Tether",
+		name: "USDC (ethereum)",
 		chainId: 1,
 	},
 	{
 		address: "0x0000000000000000000000000000000000000000",
 		symbol: "ETH",
 		decimals: 18,
-		name: "Ether",
+		name: "ETH (arbitrum)",
 		chainId: 42161,
 	},
 	{
 		address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
 		symbol: "USDC",
 		decimals: 6,
-		name: "USD Coin",
+		name: "USDC (arbitrum)",
 		chainId: 42161,
 	},
-]
-
-const SOL_TOKENS: SwapToken[] = [
 	{
-		address: "So11111111111111111111111111111111111111112",
-		symbol: "SOL",
-		decimals: 9,
-		name: "Solana",
-		chainId: 7565164,
+		address: "0x0000000000000000000000000000000000000000",
+		symbol: "ETH",
+		decimals: 18,
+		name: "ETH (base)",
+		chainId: 8453,
 	},
 	{
-		address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+		address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
 		symbol: "USDC",
 		decimals: 6,
-		name: "USD Coin",
-		chainId: 7565164,
+		name: "USDC (base)",
+		chainId: 8453,
 	},
 ]
 
-function toSmallest(amount: string, decimals: number): string {
-	const n = Number.parseFloat(amount)
-	return Math.floor(n * 10 ** decimals).toString()
-}
-
 export const debridge: ProviderModule = {
-	tokens: (chainId) => {
-		if (chainId === 7565164 || chainId === "7565164") return SOL_TOKENS
-		return EVM_TOKENS
-	},
+	tokens: () => TOKENS,
 
-	quote: async ({ input, output, amount, sender, destChainId }) => {
+	quote: async ({ input, output, amount, sender }) => {
 		const srcChainId = input.chainId || 1
-		const dstChainId = destChainId || output.chainId || 1
+		const dstChainId = output.chainId || 42161
 		const smallAmount = toSmallest(amount, input.decimals)
 		if (smallAmount === "0") return null
+
+		if (srcChainId === dstChainId && input.address === output.address) return null
 
 		const params = new URLSearchParams({
 			srcChainId: srcChainId.toString(),
@@ -88,28 +73,35 @@ export const debridge: ProviderModule = {
 			srcChainTokenInAmount: smallAmount,
 			dstChainId: dstChainId.toString(),
 			dstChainTokenOut: output.address,
+			dstChainTokenOutAmount: "auto",
 			prependOperatingExpenses: "true",
 		})
 
-		if (sender) params.set("senderAddress", sender)
+		if (sender) {
+			params.set("senderAddress", sender)
+			params.set("srcChainOrderAuthorityAddress", sender)
+			params.set("dstChainTokenOutRecipient", sender)
+			params.set("dstChainOrderAuthorityAddress", sender)
+		}
 
 		const res = await fetch(`/api/debridge?${params}`)
 		if (!res.ok) return null
 		const data = await res.json()
 
-		if (!data.estimation) return null
+		if (data.error || data.errorCode) return null
 
-		const outputAmount = (
-			Number(
-				data.estimation.dstChainTokenOut?.amount ??
-					data.estimation.costsDetails?.[0]?.amount ??
-					"0",
-			) /
-			10 ** output.decimals
-		).toString()
+		const estimation = data.estimation
+		if (!estimation) return null
 
+		const outAmount = estimation.dstChainTokenOut?.amount
+		if (!outAmount) return null
+
+		const outputAmount = (Number(outAmount) / 10 ** output.decimals).toString()
 		const inputNum = Number.parseFloat(amount)
 		const outputNum = Number.parseFloat(outputAmount)
+
+		const srcName = CHAINS.find((c) => c.id === Number(srcChainId))?.name ?? "?"
+		const dstName = CHAINS.find((c) => c.id === Number(dstChainId))?.name ?? "?"
 
 		return {
 			provider: "debridge",
@@ -118,13 +110,13 @@ export const debridge: ProviderModule = {
 			inputAmount: amount,
 			outputAmount,
 			rate: inputNum > 0 ? outputNum / inputNum : 0,
-			route: `${CHAINS.find((c) => c.id === Number(srcChainId))?.name ?? "?"} -> ${CHAINS.find((c) => c.id === Number(dstChainId))?.name ?? "?"}`,
+			route: `${srcName} -> ${dstName}`,
 			_raw: data,
-		} as Quote & { _raw: any }
+		}
 	},
 
 	swap: async ({ quote, signer }) => {
-		const raw = (quote as any)._raw
+		const raw = quote._raw as Record<string, any> | undefined
 		if (!raw?.tx || !signer) return { status: "error", message: "missing data" }
 
 		const hash = await signer.sendTransaction({
