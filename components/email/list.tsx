@@ -43,7 +43,9 @@ export default function List() {
 									email.unread ? "font-semibold text-white" : "text-white/40"
 								}`}
 							>
-								{folder === "sent" || folder === "drafts" ? `to ${email.to}` : email.from}
+								{folder === "sent" || folder === "drafts" ? (
+									<><span className="text-white/20">to </span>{email.to}</>
+								) : email.from}
 							</span>
 						</div>
 						<div className="flex shrink-0 items-center gap-2">
