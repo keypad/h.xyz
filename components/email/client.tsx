@@ -11,7 +11,7 @@ import Toolbar from "@/components/email/toolbar"
 export default function Client() {
 	return (
 		<Provider>
-			<div className="flex h-[calc(100vh-80px)] overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1e1c1a]">
+			<div className="flex h-screen overflow-hidden bg-[#1e1c1a]">
 				<div className="hidden w-56 shrink-0 md:block">
 					<Sidebar />
 				</div>
