@@ -1,4 +1,5 @@
-import type { ProviderModule, Quote, SwapToken } from "./types"
+import type { ProviderModule, SwapToken } from "./types"
+import { toSmallest } from "./types"
 
 const CHAINS: Record<number, string> = {
 	1: "mainnet",
@@ -61,13 +62,6 @@ const TOKENS: SwapToken[] = [
 
 const API = "https://api.cow.fi"
 
-function toSmallest(amount: string, decimals: number): string {
-	const n = Number.parseFloat(amount)
-	return BigInt(
-		Math.floor(n * 10 ** Math.min(decimals, 8)) * 10 ** Math.max(0, decimals - 8),
-	).toString()
-}
-
 export const cow: ProviderModule = {
 	tokens: () => TOKENS,
 
@@ -84,16 +78,15 @@ export const cow: ProviderModule = {
 		const buyToken =
 			output.symbol === "ETH" ? "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" : output.address
 
+		const from = sender || "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 		const body: Record<string, any> = {
 			sellToken,
 			buyToken,
 			sellAmountBeforeFee: sellAmount,
 			kind: "sell",
+			from,
+			receiver: from,
 			validFor: 1800,
-		}
-		if (sender) {
-			body.from = sender
-			body.receiver = sender
 		}
 
 		const res = await fetch(`${API}/${chain}/api/v1/quote`, {
@@ -119,11 +112,11 @@ export const cow: ProviderModule = {
 			route: "cow batch auction",
 			fee: (Number(BigInt(data.quote.feeAmount)) / 10 ** input.decimals).toFixed(6),
 			_raw: data,
-		} as Quote & { _raw: any }
+		}
 	},
 
 	swap: async ({ quote, sender, signer }) => {
-		const raw = (quote as any)._raw
+		const raw = quote._raw as Record<string, any> | undefined
 		if (!raw || !signer) return { status: "error", message: "missing data" }
 
 		const chainId = (quote.input.chainId as number) || 1
