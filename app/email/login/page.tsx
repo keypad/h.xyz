@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { LockIcon } from "@/components/email/icons"
 import Ghost from "@/components/ghost"
 
@@ -10,6 +10,9 @@ export default function LoginPage() {
 	const router = useRouter()
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
+	const ref = useRef<HTMLInputElement>(null)
+
+	useEffect(() => ref.current?.focus(), [])
 
 	const submit = (e: React.FormEvent) => {
 		e.preventDefault()
@@ -32,6 +35,7 @@ export default function LoginPage() {
 						<span className="text-[11px] text-white/20">email</span>
 						<div className="flex items-center gap-2">
 							<input
+								ref={ref}
 								type="text"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
@@ -54,7 +58,8 @@ export default function LoginPage() {
 
 					<button
 						type="submit"
-						className="mt-2 w-full rounded-xl bg-[#f996ee] py-3.5 text-sm font-medium text-[#1a1816] transition-opacity hover:opacity-90"
+						disabled={!email || !password}
+						className="mt-2 w-full rounded-xl bg-[#f996ee] py-3.5 text-sm font-medium text-[#1a1816] transition-opacity hover:opacity-90 disabled:opacity-30"
 					>
 						sign in
 					</button>
