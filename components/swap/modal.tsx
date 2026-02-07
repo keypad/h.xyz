@@ -30,14 +30,6 @@ export default function Modal({
 		}
 	}, [])
 
-	useEffect(() => {
-		const handler = (e: KeyboardEvent) => {
-			if (e.key === "Escape") onClose()
-		}
-		document.addEventListener("keydown", handler)
-		return () => document.removeEventListener("keydown", handler)
-	}, [onClose])
-
 	const filtered = useMemo(() => {
 		const q = query.toLowerCase().trim()
 		return tokens.filter((t) => {
@@ -64,6 +56,19 @@ export default function Modal({
 			})
 			.slice(0, 8)
 	}, [tokens])
+
+	useEffect(() => {
+		const handler = (e: KeyboardEvent) => {
+			if (e.key === "Escape") onClose()
+			if (e.key === "Enter" && filtered.length > 0) {
+				e.preventDefault()
+				onSelect(filtered[0])
+				onClose()
+			}
+		}
+		document.addEventListener("keydown", handler)
+		return () => document.removeEventListener("keydown", handler)
+	}, [onClose, onSelect, filtered])
 
 	const pick = (t: SwapToken) => {
 		onSelect(t)
