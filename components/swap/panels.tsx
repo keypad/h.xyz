@@ -63,11 +63,11 @@ export function ReceivePanel({
 		<div className="rounded-xl bg-white/[0.03] p-4">
 			<span className="text-[11px] text-white/25">you receive</span>
 			<div className="mt-2 flex items-center justify-between gap-3">
-				{loading ? (
+				{loading && !quote ? (
 					<div className="h-8 w-32 animate-pulse rounded-lg bg-white/[0.06] md:h-9" />
 				) : (
 					<span
-						className={`text-2xl font-medium animate-[fadein_200ms_ease-out] md:text-3xl ${quote ? "text-white" : "text-white/15"}`}
+						className={`text-2xl font-medium animate-[fadein_200ms_ease-out] transition-opacity md:text-3xl ${loading ? "opacity-50" : ""} ${quote ? "text-white" : "text-white/15"}`}
 					>
 						{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "0"}
 					</span>

@@ -50,12 +50,14 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		const n = Number.parseFloat(amount)
 		if (!n || n <= 0) {
 			setQuote(null)
+			setLoading(false)
 			setError(!amount || amount === "0" ? "enter an amount" : null)
 			return
 		}
 		if (input.address === output.address) {
 			setError("same token")
 			setQuote(null)
+			setLoading(false)
 			return
 		}
 		setLoading(true)
@@ -135,13 +137,13 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 					{prov?.tag && <span className="text-white/10">· {prov.tag}</span>}
 				</div>
 				<div className="flex items-center gap-2">
-					{loading && (
+					{loading && !quote && (
 						<span className="text-[11px] text-white/20 animate-[fadein_200ms_ease-out]">
 							quoting...
 						</span>
 					)}
-					{!loading && quote && (
-						<div className="flex items-center gap-2 animate-[fadein_200ms_ease-out]">
+					{quote && (
+						<div className={`flex items-center gap-2 animate-[fadein_200ms_ease-out] ${loading ? "opacity-50" : ""}`}>
 							<Refresh key={refreshKey.current} onRefresh={fetchQuote} />
 							<Rate rate={quote.rate} input={input} output={output} />
 						</div>
