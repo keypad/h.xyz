@@ -12,7 +12,11 @@ export function isTransient(error: unknown): boolean {
 
 export function classify(error: unknown): string {
 	const msg = String(error instanceof Error ? error.message : error).toLowerCase()
+	if (msg.includes("401") || msg.includes("unauthorized")) return "unauthorized"
 	if (msg.includes("403")) return "unavailable"
+	if (msg.includes("429") || msg.includes("rate")) return "rate limited"
+	if (msg.includes("insufficient") || msg.includes("balance")) return "insufficient balance"
+	if (msg.includes("slippage")) return "slippage exceeded"
 	return "no route"
 }
 
