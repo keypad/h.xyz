@@ -22,7 +22,7 @@ export default function Sidebar() {
 						<span className="text-xs font-semibold text-[#f996ee]">h</span>
 					</div>
 					<div className="flex flex-col">
-						<span className="text-[13px] font-medium text-white">you@h.xyz</span>
+						<span className="text-[13px] font-medium text-white">hi@h.xyz</span>
 						<span className="text-[11px] text-white/20">encrypted</span>
 					</div>
 				</div>
