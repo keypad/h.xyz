@@ -14,7 +14,7 @@ export default function Sidebar() {
 
 	const switchFolder = (id: string) => {
 		setFolder(id)
-		const first = emails.find((e) => e.folder === id)
+		const first = emails.find((e) => (id === "starred" ? e.starred : e.folder === id))
 		setSelected(first?.id ?? null)
 		if (mobile) setMobile(false)
 	}

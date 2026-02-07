@@ -69,7 +69,8 @@ export function Provider({ children }: { children: ReactNode }) {
 	const filtered = useMemo(
 		() =>
 			emails.filter((e) => {
-				if (e.folder !== folder) return false
+				const match = folder === "starred" ? e.starred : e.folder === folder
+				if (!match) return false
 				if (!search) return true
 				const q = search.toLowerCase()
 				return (
