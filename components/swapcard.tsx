@@ -157,6 +157,7 @@ export default function Swapcard() {
 						type="text"
 						inputMode="decimal"
 						value={amount}
+						onFocus={(e) => e.target.select()}
 						onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
 						className="w-0 min-w-0 flex-1 bg-transparent text-3xl font-medium text-white outline-none placeholder:text-white/20"
 						placeholder="0"
