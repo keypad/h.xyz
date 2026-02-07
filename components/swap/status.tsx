@@ -12,7 +12,7 @@ export default function Status({
 	if (!result) return null
 
 	return (
-		<div className="absolute inset-0 z-20 flex flex-col items-center justify-center rounded-2xl bg-[#1e1c1a]/95 p-6 backdrop-blur-sm">
+		<div className="absolute inset-0 z-20 flex flex-col items-center justify-center rounded-2xl bg-[#1e1c1a]/95 p-4 backdrop-blur-sm md:p-6">
 			{result.status === "pending" && (
 				<>
 					<div className="mb-4 h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-[#EC4612]" />
@@ -37,7 +37,7 @@ export default function Status({
 					</div>
 					<span className="mb-2 text-sm text-white/80">complete</span>
 					{result.hash && (
-						<span className="mb-4 font-mono text-[11px] text-white/30">
+						<span className="mb-4 break-all font-mono text-[11px] text-white/30">
 							{result.hash.slice(0, 12)}...{result.hash.slice(-8)}
 						</span>
 					)}
@@ -81,7 +81,7 @@ export default function Status({
 			<button
 				type="button"
 				onClick={onClose}
-				className="mt-6 rounded-lg px-4 py-2 text-xs text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/50"
+				className="mt-6 rounded-lg px-5 py-2.5 text-xs text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/50 md:px-4 md:py-2"
 			>
 				close
 			</button>
