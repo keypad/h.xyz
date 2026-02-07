@@ -11,33 +11,38 @@ export default function Refresh({ onRefresh }: { onRefresh: () => void }) {
 	}, [onRefresh])
 
 	return (
-		<svg width="14" height="14" viewBox="0 0 16 16" className="shrink-0" aria-hidden="true">
-			<circle
-				cx="8"
-				cy="8"
-				r="7"
-				fill="none"
-				stroke="white"
-				strokeOpacity="0.06"
-				strokeWidth="1.5"
-			/>
-			<circle
-				cx="8"
-				cy="8"
-				r="7"
-				fill="none"
-				stroke="white"
-				strokeOpacity="0.2"
-				strokeWidth="1.5"
-				strokeLinecap="round"
-				strokeDasharray="44"
-				strokeDashoffset="44"
-				style={{
-					animation: `progress ${INTERVAL}ms linear forwards`,
-					transformOrigin: "center",
-					transform: "rotate(-90deg)",
-				}}
-			/>
-		</svg>
+		<button
+			type="button"
+			onClick={onRefresh}
+			className="flex h-5 w-5 items-center justify-center rounded text-white/30 transition-colors hover:text-white/50"
+		>
+			<svg width="14" height="14" viewBox="0 0 16 16" className="shrink-0" aria-hidden="true">
+				<circle
+					cx="8"
+					cy="8"
+					r="7"
+					fill="none"
+					stroke="white"
+					strokeOpacity="0.06"
+					strokeWidth="1.5"
+				/>
+				<circle
+					cx="8"
+					cy="8"
+					r="7"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="1.5"
+					strokeLinecap="round"
+					strokeDasharray="44"
+					strokeDashoffset="44"
+					style={{
+						animation: `progress ${INTERVAL}ms linear forwards`,
+						transformOrigin: "center",
+						transform: "rotate(-90deg)",
+					}}
+				/>
+			</svg>
+		</button>
 	)
 }
