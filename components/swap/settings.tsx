@@ -58,7 +58,9 @@ export default function Settings({
 			<button
 				type="button"
 				onClick={() => setOpen(!open)}
-				className="flex h-7 w-7 items-center justify-center rounded-lg text-white/30 transition-colors hover:text-white/50"
+				className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors hover:text-white/50 ${
+				slippage !== DEFAULT ? "text-[#EC4612]/60" : "text-white/30"
+			}`}
 			>
 				<svg
 					aria-hidden="true"
