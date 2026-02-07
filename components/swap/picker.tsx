@@ -61,6 +61,22 @@ export function Search({
 	)
 }
 
+export function Skeleton() {
+	return (
+		<div className="mt-3 border-t border-white/[0.04] px-2 py-2">
+			{Array.from({ length: 6 }).map((_, i) => (
+				<div key={i} className="flex items-center gap-3 px-3 py-2.5">
+					<div className="h-9 w-9 animate-pulse rounded-full bg-white/[0.06]" />
+					<div className="flex-1">
+						<div className="h-3.5 w-16 animate-pulse rounded bg-white/[0.06]" />
+						<div className="mt-1.5 h-2.5 w-24 animate-pulse rounded bg-white/[0.04]" />
+					</div>
+				</div>
+			))}
+		</div>
+	)
+}
+
 export function TokenList({
 	tokens,
 	selected,
