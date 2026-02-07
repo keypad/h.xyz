@@ -151,7 +151,12 @@ export default function Modal({
 					</>
 				)}
 
-				<TokenList tokens={filtered} selected={selected} onPick={pick} />
+				<TokenList
+					tokens={filtered}
+					selected={selected}
+					onPick={pick}
+					highlight={query && filtered.length > 0 ? uid(filtered[0]) : undefined}
+				/>
 			</div>
 		</div>
 	)

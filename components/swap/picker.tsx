@@ -64,10 +64,12 @@ export function TokenList({
 	tokens,
 	selected,
 	onPick,
+	highlight,
 }: {
 	tokens: SwapToken[]
 	selected: SwapToken
 	onPick: (t: SwapToken) => void
+	highlight?: string
 }) {
 	return (
 		<div className="mt-3 min-h-0 flex-1 overflow-y-auto border-t border-white/[0.04] px-2 py-2 md:max-h-72">
@@ -75,16 +77,20 @@ export function TokenList({
 				<div className="py-8 text-center text-sm text-white/20">no tokens found</div>
 			)}
 			{tokens.map((t) => {
+				const id = uid(t)
 				const active = t.address === selected.address && t.chainId === selected.chainId
+				const first = highlight === id
 				return (
 					<button
-						key={uid(t)}
+						key={id}
 						type="button"
 						onClick={() => onPick(t)}
 						className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors md:py-2.5 ${
 							active
 								? "bg-white/[0.06] text-white"
-								: "text-white/60 hover:bg-white/[0.03] hover:text-white"
+								: first
+									? "bg-white/[0.03] text-white"
+									: "text-white/60 hover:bg-white/[0.03] hover:text-white"
 						}`}
 					>
 						<Avatar token={t} size={36} />
