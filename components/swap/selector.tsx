@@ -118,7 +118,7 @@ function Modal({
 	}
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh]">
+		<div className="fixed inset-0 z-50 flex items-end justify-center md:items-start md:pt-[10vh]">
 			<div
 				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
 				onClick={onClose}
@@ -126,8 +126,8 @@ function Modal({
 				role="button"
 				tabIndex={-1}
 			/>
-			<div className="relative w-full max-w-md rounded-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl">
-				<div className="flex items-start justify-between p-5 pb-0">
+			<div className="relative flex max-h-[100dvh] w-full flex-col rounded-t-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl md:max-h-[80vh] md:max-w-md md:rounded-2xl">
+				<div className="flex items-start justify-between p-4 pb-0 md:p-5 md:pb-0">
 					<div>
 						<h3 className="text-base font-semibold text-white">select a token</h3>
 						<p className="mt-1 text-[11px] text-white/30">search by name or address</p>
@@ -135,7 +135,7 @@ function Modal({
 					<button
 						type="button"
 						onClick={onClose}
-						className="flex h-8 w-8 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/60"
+						className="flex h-11 w-11 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/60 md:h-8 md:w-8"
 					>
 						<svg
 							aria-hidden="true"
@@ -151,8 +151,8 @@ function Modal({
 					</button>
 				</div>
 
-				<div className="px-5 pt-4">
-					<div className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3">
+				<div className="px-4 pt-4 md:px-5">
+					<div className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3.5 py-3.5 md:py-3">
 						<svg
 							aria-hidden="true"
 							width="16"
@@ -172,7 +172,7 @@ function Modal({
 							value={query}
 							onChange={(e) => setQuery(e.target.value)}
 							placeholder="search by token or address"
-							className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/20"
+							className="w-full bg-transparent text-base text-white outline-none placeholder:text-white/20 md:text-sm"
 						/>
 						{query && (
 							<button
@@ -197,13 +197,13 @@ function Modal({
 				</div>
 
 				{!query && (
-					<div className="flex flex-wrap gap-1.5 px-5 pt-3">
+					<div className="flex flex-wrap gap-1.5 px-4 pt-3 md:px-5">
 						{popular.map((t) => (
 							<button
 								key={uid(t)}
 								type="button"
 								onClick={() => pick(t)}
-								className="flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.03] px-2.5 py-1.5 text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
+								className="flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white md:px-2.5 md:py-1.5"
 							>
 								<Avatar token={t} size={18} />
 								{t.symbol}
@@ -212,7 +212,7 @@ function Modal({
 					</div>
 				)}
 
-				<div className="mt-3 max-h-72 overflow-y-auto border-t border-white/[0.04] px-2 py-2">
+				<div className="mt-3 min-h-0 flex-1 overflow-y-auto border-t border-white/[0.04] px-2 py-2 md:max-h-72">
 					{filtered.length === 0 && (
 						<div className="py-8 text-center text-sm text-white/20">no tokens found</div>
 					)}
@@ -223,7 +223,7 @@ function Modal({
 								key={uid(t)}
 								type="button"
 								onClick={() => pick(t)}
-								className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+								className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors md:py-2.5 ${
 									active
 										? "bg-white/[0.06] text-white"
 										: "text-white/60 hover:bg-white/[0.03] hover:text-white"
@@ -296,7 +296,7 @@ export default function Selector({
 			<button
 				type="button"
 				onClick={() => setOpen(true)}
-				className="flex items-center gap-2 rounded-full bg-white/[0.06] py-1.5 pr-2.5 pl-2 text-sm font-medium text-white transition-colors hover:bg-white/[0.09]"
+				className="flex items-center gap-2 rounded-full bg-white/[0.06] py-2 pr-3 pl-2 text-sm font-medium text-white transition-colors hover:bg-white/[0.09] md:py-1.5 md:pr-2.5"
 			>
 				<Avatar token={token} size={20} />
 				{token.symbol}
