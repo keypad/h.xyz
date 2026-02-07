@@ -22,7 +22,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	const [output, setOutput] = useState<SwapToken>(tokenList[1])
 	const [amount, setAmount] = useState("1")
 	const [quote, setQuote] = useState<Quote | null>(null)
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(true)
 	const [result, setResult] = useState<SwapResult | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [flipped, setFlipped] = useState(false)
@@ -135,12 +135,16 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 					{prov?.tag && <span className="text-white/10">· {prov.tag}</span>}
 				</div>
 				<div className="flex items-center gap-2">
-					{loading && <span className="text-[11px] text-white/20">quoting...</span>}
+					{loading && (
+						<span className="text-[11px] text-white/20 animate-[fadein_200ms_ease-out]">
+							quoting...
+						</span>
+					)}
 					{!loading && quote && (
-						<>
+						<div className="flex items-center gap-2 animate-[fadein_200ms_ease-out]">
 							<Refresh key={refreshKey.current} onRefresh={fetchQuote} />
 							<Rate rate={quote.rate} input={input} output={output} />
-						</>
+						</div>
 					)}
 					<Settings slippage={slippage} onChange={setSlippage} />
 				</div>
