@@ -26,28 +26,23 @@ export function chainLabel(id: number | string): string {
 
 export type Category = "all" | "popular" | "defi" | "stablecoins"
 
+const POPULAR = new Set([
+	"eth", "btc", "sol", "wbtc", "weth", "matic", "bnb", "xrp", "doge", "ada", "dot", "avax",
+	"trx", "xmr",
+])
+const STABLECOINS = new Set(["usdc", "usdt", "dai", "busd", "tusd", "frax", "lusd", "gusd", "wxdai"])
+const DEFI = new Set([
+	"uni", "aave", "crv", "comp", "mkr", "ldo", "link", "snx", "grt", "cow", "jup", "ray",
+	"ens", "1inch", "sushi", "bal", "yfi", "rpl", "pendle", "orca", "msol", "jitosol",
+	"pyth", "bonk", "wif", "ape", "pepe", "shib",
+])
+
 export function categoryFor(symbol: string): Category[] {
 	const s = symbol.toLowerCase()
 	const cats: Category[] = ["all"]
-	if (["eth", "btc", "sol", "wbtc", "weth", "matic"].includes(s)) cats.push("popular")
-	if (["usdc", "usdt", "dai", "busd"].includes(s)) cats.push("stablecoins")
-	if (
-		[
-			"uni",
-			"aave",
-			"crv",
-			"comp",
-			"mkr",
-			"ldo",
-			"link",
-			"snx",
-			"grt",
-			"cow",
-			"jup",
-			"ray",
-		].includes(s)
-	)
-		cats.push("defi")
+	if (POPULAR.has(s)) cats.push("popular")
+	if (STABLECOINS.has(s)) cats.push("stablecoins")
+	if (DEFI.has(s)) cats.push("defi")
 	return cats
 }
 
