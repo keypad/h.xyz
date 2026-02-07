@@ -23,7 +23,7 @@ const Context = createContext<State>(null!)
 
 export function Provider({ children }: { children: ReactNode }) {
 	const [folder, setFolder] = useState("inbox")
-	const [selected, setSelected] = useState<number | null>(1)
+	const [selected, setSelected] = useState<number | null>(null)
 	const [composing, setComposing] = useState(false)
 	const [search, setSearch] = useState("")
 	const [mobile, setMobile] = useState(false)
