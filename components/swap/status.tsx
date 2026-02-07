@@ -34,6 +34,15 @@ export default function Status({
 		return () => clearTimeout(id)
 	}, [result, onClose])
 
+	useEffect(() => {
+		if (!result) return
+		const handler = (e: KeyboardEvent) => {
+			if (e.key === "Escape") onClose()
+		}
+		window.addEventListener("keydown", handler)
+		return () => window.removeEventListener("keydown", handler)
+	}, [result, onClose])
+
 	if (!result) return null
 
 	return (
