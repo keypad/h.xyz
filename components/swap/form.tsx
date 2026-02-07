@@ -20,6 +20,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	const [quote, setQuote] = useState<Quote | null>(null)
 	const [loading, setLoading] = useState(false)
 	const [result, setResult] = useState<SwapResult | null>(null)
+	const [error, setError] = useState<string | null>(null)
 	const [flipped, setFlipped] = useState(false)
 	const timer = useRef<ReturnType<typeof setTimeout>>(null)
 	const refreshKey = useRef(0)
@@ -34,17 +35,29 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	}, [tokenList])
 
 	const fetchQuote = useCallback(async () => {
+		setError(null)
 		const n = Number.parseFloat(amount)
 		if (!n || n <= 0) {
+			setQuote(null)
+			return
+		}
+		if (input.address === output.address) {
+			setError("select different tokens")
 			setQuote(null)
 			return
 		}
 		setLoading(true)
 		try {
 			const q = await mod.quote({ input, output, amount, sender: address ?? undefined, slippage })
-			setQuote(q)
+			if (q) {
+				setQuote(q)
+			} else {
+				setQuote(null)
+				setError("no route found")
+			}
 		} catch {
 			setQuote(null)
+			setError("quote unavailable")
 		}
 		setLoading(false)
 	}, [mod, input, output, amount, address, slippage])
@@ -165,6 +178,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 						exclude={input.address}
 					/>
 				</div>
+				{error && <div className="mt-2 text-[12px] text-red-400/60">{error}</div>}
 			</div>
 
 			{quote && (
