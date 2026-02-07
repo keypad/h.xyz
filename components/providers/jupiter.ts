@@ -102,6 +102,18 @@ const TOKENS: SwapToken[] = [
 		decimals: 6,
 		name: "Wormhole",
 	},
+	{
+		address: "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr",
+		symbol: "POPCAT",
+		decimals: 9,
+		name: "Popcat",
+	},
+	{
+		address: "MEW1gQWJ3nEXg2qgERiKu7FAFj79PHvQVREQUzScPP5",
+		symbol: "MEW",
+		decimals: 5,
+		name: "cat in a dogs world",
+	},
 ]
 
 export const jupiter: ProviderModule = {
