@@ -22,7 +22,12 @@ export default function Toolbar() {
 					type="text"
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
-					onKeyDown={(e) => e.key === "Escape" && setSearch("")}
+					onKeyDown={(e) => {
+					if (e.key === "Escape") {
+						setSearch("")
+						;(e.target as HTMLInputElement).blur()
+					}
+				}}
 					placeholder="search"
 					className="w-full bg-transparent text-[13px] text-white/70 placeholder:text-white/20 focus:outline-none"
 				/>
