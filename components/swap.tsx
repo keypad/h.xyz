@@ -4,7 +4,7 @@ export default function Swap() {
 	return (
 		<section id="swap" className="px-6 py-24">
 			<div className="mx-auto max-w-6xl">
-				<div className="rounded-[2rem] bg-surface p-12 md:p-16">
+				<div className="rounded-[2rem] bg-surface p-6 md:p-12 lg:p-16">
 					<div className="grid items-center gap-12 md:grid-cols-2">
 						<div>
 							<span className="mb-6 inline-block rounded-full bg-[#EC4612] px-4 py-1.5 text-xs font-medium text-white">

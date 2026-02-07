@@ -5,8 +5,8 @@ import Ghost from "@/components/ghost"
 
 const links = {
 	products: [
-		{ label: "swap", href: "#swap" },
-		{ label: "email", href: "#email" },
+		{ label: "swap", href: "/swap" },
+		{ label: "email", href: "/email" },
 		{ label: "docs", href: "/docs" },
 	],
 	social: [
@@ -56,14 +56,14 @@ export default function Footer() {
 	return (
 		<footer className="border-t border-white/5 text-white">
 			<style>{`@keyframes scroll{to{transform:translateX(-50%)}}`}</style>
-			<div className="flex flex-col justify-between gap-12 px-12 pt-16 pb-12 md:flex-row md:px-20">
+			<div className="flex flex-col justify-between gap-12 px-6 pt-16 pb-12 md:flex-row md:px-20">
 				<div>
 					<Ghost className="h-6 w-auto text-white" />
 					<p className="mt-4 max-w-xs text-sm leading-relaxed text-white/40">
 						zero tracking. zero data. zero compromise.
 					</p>
 				</div>
-				<div className="flex gap-16">
+				<div className="flex gap-10 md:gap-16">
 					<Column title="products" items={links.products} />
 					<Column title="social" items={links.social} />
 					<Column title="legal" items={links.legal} />
@@ -77,7 +77,7 @@ export default function Footer() {
 					{marquee} {marquee}
 				</div>
 			</div>
-			<div className="flex items-end justify-between border-t border-white/5 px-12 py-6 md:px-20">
+			<div className="flex items-end justify-between border-t border-white/5 px-6 py-6 md:px-20">
 				<span className="text-xs text-white/30">2026 h.xyz</span>
 				<button
 					type="button"
