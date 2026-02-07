@@ -5,15 +5,16 @@ import { folders } from "@/components/email/data"
 import { LockIcon } from "@/components/email/icons"
 
 export default function Sidebar() {
-	const { folder, setFolder, setSelected, emails, mobile, setMobile } = useEmail()
+	const { folder, setFolder, setSelected, setSearch, emails, mobile, setMobile } = useEmail()
 
-	const counts = (id: string) => {
-		if (id === "starred") return emails.filter((e) => e.starred).length || undefined
-		return emails.filter((e) => e.folder === id && e.unread).length || undefined
+	const count = (id: string) => {
+		if (id === "starred") return emails.filter((e) => e.starred).length || 0
+		return emails.filter((e) => e.folder === id && e.unread).length
 	}
 
 	const switchFolder = (id: string) => {
 		setFolder(id)
+		setSearch("")
 		const first = emails.find((e) => (id === "starred" ? e.starred : e.folder === id))
 		setSelected(first?.id ?? null)
 		if (mobile) setMobile(false)
@@ -53,9 +54,9 @@ export default function Sidebar() {
 							<path d={f.icon} />
 						</svg>
 						<span className="flex-1 text-[13px]">{f.label}</span>
-						{counts(f.id) && (
+						{count(f.id) > 0 && (
 							<span className="rounded-full bg-[#f996ee]/15 px-2 py-0.5 text-[10px] font-medium text-[#f996ee]">
-								{counts(f.id)}
+								{count(f.id)}
 							</span>
 						)}
 					</button>
