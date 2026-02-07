@@ -25,7 +25,7 @@ export default function Selector({
 		return () => document.removeEventListener("mousedown", handler)
 	}, [])
 
-	const filtered = tokens.filter((t) => t.address !== exclude)
+	const filtered = tokens.filter((t) => !(t.address === exclude && t.chainId === token.chainId))
 
 	return (
 		<div ref={ref} className="relative">
@@ -62,7 +62,7 @@ export default function Selector({
 								setOpen(false)
 							}}
 							className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
-								t.address === token.address
+								t.address === token.address && t.chainId === token.chainId
 									? "bg-white/[0.06] text-white"
 									: "text-white/50 hover:bg-white/[0.03] hover:text-white"
 							}`}
