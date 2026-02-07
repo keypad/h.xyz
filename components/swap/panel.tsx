@@ -7,6 +7,7 @@ import { houdini } from "../providers/houdini"
 import { jupiter } from "../providers/jupiter"
 import { providers } from "../providers/registry"
 import type { ChainType, ProviderModule, Quote, SwapResult, SwapToken } from "../providers/types"
+
 import { uniswap } from "../providers/uniswap"
 import { useWalletContext, WalletContextProvider } from "../wallet/context"
 import Selector from "./selector"
@@ -85,9 +86,9 @@ function SwapForm({ providerId }: { providerId: string }) {
 	}
 
 	const execute = async () => {
-		if (!quote || !connected || !signer) return
+		if (!quote || !connected || !signer || !address) return
 		setResult({ status: "pending" })
-		const res = await mod.swap({ quote, sender: address!, signer })
+		const res = await mod.swap({ quote, sender: address, signer })
 		setResult(res)
 	}
 
