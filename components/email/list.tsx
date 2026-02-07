@@ -6,7 +6,7 @@ import Empty from "@/components/email/empty"
 import { LockIcon } from "@/components/email/icons"
 
 export default function List() {
-	const { filtered, selected, setSelected, markRead, folder } = useEmail()
+	const { filtered, selected, setSelected, markRead, folder, search } = useEmail()
 	const refs = useRef<Map<number, HTMLButtonElement>>(new Map())
 
 	useEffect(() => {
@@ -16,7 +16,7 @@ export default function List() {
 		}
 	}, [selected])
 
-	if (filtered.length === 0) return <Empty folder={folder} />
+	if (filtered.length === 0) return <Empty folder={folder} searching={!!search} />
 
 	return (
 		<div className="flex-1 divide-y divide-white/[0.03] overflow-y-auto">
