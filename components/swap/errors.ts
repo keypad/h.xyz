@@ -1,11 +1,14 @@
-export function classify(error: unknown): string {
-	if (error instanceof DOMException && error.name === "AbortError") return "slow response"
-	if (error instanceof TypeError && error.message.includes("fetch")) return "provider unavailable"
+export function isTransient(error: unknown): boolean {
+	if (error instanceof DOMException && error.name === "AbortError") return true
+	if (error instanceof TypeError && error.message.includes("fetch")) return true
 	const msg = String(error instanceof Error ? error.message : error).toLowerCase()
-	if (msg.includes("403") || msg.includes("429") || msg.includes("rate")) return "rate limited"
-	if (msg.includes("network") || msg.includes("failed to fetch")) return "provider unavailable"
-	if (msg.includes("timeout") || msg.includes("abort")) return "slow response"
-	return "quote unavailable"
+	return msg.includes("429") || msg.includes("rate") || msg.includes("timeout") || msg.includes("network")
+}
+
+export function classify(error: unknown): string {
+	const msg = String(error instanceof Error ? error.message : error).toLowerCase()
+	if (msg.includes("403")) return "unavailable"
+	return "no route"
 }
 
 export function withTimeout<T>(promise: Promise<T>, ms: number, signal: AbortSignal): Promise<T> {
@@ -25,4 +28,23 @@ export function withTimeout<T>(promise: Promise<T>, ms: number, signal: AbortSig
 				reject(e)
 			})
 	})
+}
+
+export async function withRetry<T>(
+	fn: (signal: AbortSignal) => Promise<T>,
+	signal: AbortSignal,
+	retries = 2,
+): Promise<T> {
+	let last: unknown
+	for (let i = 0; i <= retries; i++) {
+		if (signal.aborted) throw new DOMException("cancelled", "AbortError")
+		try {
+			return await fn(signal)
+		} catch (e) {
+			last = e
+			if (!isTransient(e) || i === retries) throw e
+			await new Promise((r) => setTimeout(r, (i + 1) * 1000))
+		}
+	}
+	throw last
 }

@@ -41,22 +41,18 @@ export function ReceivePanel({
 	quote,
 	loading,
 	error,
-	retryable,
 	token,
 	tokens,
 	exclude,
 	onSelect,
-	onRetry,
 }: {
 	quote: { outputAmount: string } | null
 	loading: boolean
 	error: string | null
-	retryable: boolean
 	token: SwapToken
 	tokens: SwapToken[]
 	exclude: string
 	onSelect: (t: SwapToken) => void
-	onRetry: () => void
 }) {
 	return (
 		<div className="rounded-xl bg-white/[0.03] p-4">
@@ -69,15 +65,8 @@ export function ReceivePanel({
 				</span>
 				<Selector token={token} tokens={tokens} onSelect={onSelect} exclude={exclude} />
 			</div>
-			{error && (
-				<div className="mt-2 flex items-center gap-2 text-[12px] text-red-400/60">
-					<span>{error}</span>
-					{retryable && (
-						<button type="button" onClick={onRetry} className="text-white/30 hover:text-white/50">
-							retry
-						</button>
-					)}
-				</div>
+			{error && error !== "enter an amount" && (
+				<span className="mt-2 block text-[11px] text-white/20">{error}</span>
 			)}
 		</div>
 	)

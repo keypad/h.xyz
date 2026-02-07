@@ -6,7 +6,7 @@ import type { Quote, SwapResult, SwapToken } from "../providers/types"
 import ConnectButton from "../wallet/connect"
 import { useWalletContext } from "../wallet/context"
 import Details from "./details"
-import { classify, withTimeout } from "./errors"
+import { classify, withRetry, withTimeout } from "./errors"
 import { fmt, modules } from "./modules"
 import { FlipButton, PayPanel, ReceivePanel } from "./panels"
 import Refresh from "./refresh"
@@ -56,19 +56,18 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		}
 		setLoading(true)
 		try {
-			const q = await withTimeout(
-				mod.quote({ input, output, amount, sender: address ?? undefined, slippage }),
-				10000,
+			const q = await withRetry(
+				(s) => withTimeout(mod.quote({ input, output, amount, sender: address ?? undefined, slippage }), 10000, s),
 				signal,
 			)
 			if (signal.aborted) return
 			if (q) setQuote(q)
 			else {
 				setQuote(null)
-				setError("no route found")
+				setError("no route")
 			}
 		} catch (e) {
-			if (signal.aborted && !(e instanceof DOMException && e.name === "AbortError")) return
+			if (signal.aborted) return
 			setQuote(null)
 			setError(classify(e))
 		}
@@ -114,13 +113,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		}
 	}
 
-	const retry = () => {
-		refreshKey.current++
-		fetchQuote()
-	}
-
 	const prov = providers.find((p) => p.id === providerId)
-	const retryable = error === "rate limited" || error === "provider unavailable" || error === "slow response"
 	const buttonError = error && error !== "enter an amount"
 
 	return (
@@ -160,12 +153,10 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 				quote={quote}
 				loading={loading}
 				error={error}
-				retryable={retryable}
 				token={output}
 				tokens={tokenList}
 				exclude={input.address}
 				onSelect={setOutput}
-				onRetry={retry}
 			/>
 			<div className={`overflow-hidden transition-all duration-200 ${quote ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}>
 				{quote && <Details quote={quote} input={input} slippage={slippage} chain={chain} color={prov?.color} />}
