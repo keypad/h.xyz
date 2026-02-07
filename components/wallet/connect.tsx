@@ -24,19 +24,19 @@ const EVM_WALLETS = [
 	{
 		name: "Phantom",
 		match: "phantom",
-		icon: "https://phantom.app/img/phantom-logo.svg",
+		icon: "https://avatars.githubusercontent.com/u/78782331",
 	},
 	{
 		name: "Rabby",
 		match: "rabby",
-		icon: "https://rabby.io/assets/icons/logo.svg",
+		icon: "https://avatars.githubusercontent.com/u/92980039",
 	},
 ]
 
 const SOL_WALLETS = [
 	{
 		name: "Phantom",
-		icon: "https://phantom.app/img/phantom-logo.svg",
+		icon: "https://avatars.githubusercontent.com/u/78782331",
 	},
 	{
 		name: "Solflare",
