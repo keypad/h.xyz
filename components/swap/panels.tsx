@@ -72,6 +72,28 @@ export function ReceivePanel({
 	)
 }
 
+export function SwapButton({
+	disabled,
+	error,
+	onClick,
+}: { disabled: boolean; error: string | null; onClick: () => void }) {
+	const hasError = error && error !== "enter an amount"
+	return (
+		<button
+			type="button"
+			disabled={disabled || !!hasError}
+			onClick={onClick}
+			className={`w-full rounded-xl py-3.5 text-sm font-medium transition-all md:py-4 ${
+				hasError
+					? "bg-white/[0.04] text-white/25"
+					: "bg-[#EC4612] text-white hover:brightness-110 disabled:opacity-30 disabled:hover:brightness-100"
+			}`}
+		>
+			{hasError || "swap"}
+		</button>
+	)
+}
+
 export function FlipButton({ flipped, onFlip }: { flipped: boolean; onFlip: () => void }) {
 	return (
 		<div className="relative my-1 flex justify-center">
