@@ -91,15 +91,9 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	const flip = () => {
 		setFlipped((f) => !f)
 		refreshKey.current++
-		const prev = input
 		setInput(output)
-		setOutput(prev)
-		if (quote)
-			setAmount(
-				Number.parseFloat(quote.outputAmount)
-					.toFixed(6)
-					.replace(/\.?0+$/, ""),
-			)
+		setOutput(input)
+		if (quote) setAmount(Number.parseFloat(quote.outputAmount).toFixed(6).replace(/\.?0+$/, ""))
 	}
 
 	const execute = async () => {
@@ -116,9 +110,15 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	}
 
 	const prov = providers.find((p) => p.id === providerId)
+	const submit = (e: React.KeyboardEvent) => {
+		if (e.key === "Enter" && !e.repeat) execute()
+	}
 
 	return (
-		<div className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-4 md:p-5">
+		<div
+			className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-4 md:p-5"
+			onKeyDown={submit}
+		>
 			<Status result={result} onClose={() => setResult(null)} />
 			<div className="mb-3 flex items-center justify-between px-1">
 				<div className="flex items-center gap-2 text-[11px] text-white/20">
