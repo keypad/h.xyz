@@ -21,7 +21,7 @@ const TOKENS: SwapToken[] = [
 		symbol: "USDT",
 		decimals: 6,
 		name: "Tether",
-		logo: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.png",
+		logo: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.svg",
 	},
 	{
 		address: "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
@@ -35,7 +35,7 @@ const TOKENS: SwapToken[] = [
 		symbol: "JTO",
 		decimals: 9,
 		name: "Jito",
-		logo: "https://metadata.jito.network/token/jto/icon.png",
+		logo: "https://metadata.jito.network/token/jto/image",
 	},
 	{
 		address: "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
@@ -56,25 +56,28 @@ const TOKENS: SwapToken[] = [
 		symbol: "PYTH",
 		decimals: 6,
 		name: "Pyth Network",
-		logo: "https://pyth.network/token.png",
+		logo: "https://pyth.network/token.svg",
 	},
 	{
 		address: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
 		symbol: "WIF",
 		decimals: 6,
 		name: "dogwifhat",
+		logo: "https://bafkreibk3covs5ltyqxa272uodhculbr6kea6betidfwy3ajsav2vjzyum.ipfs.nftstorage.link",
 	},
 	{
 		address: "rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof",
 		symbol: "RENDER",
 		decimals: 8,
 		name: "Render Token",
+		logo: "https://shdw-drive.genesysgo.net/5zseP54TGrcz9C8HdjZwJJsZ6f3VbP11p1abwKWGykZH/rndr.png",
 	},
 	{
 		address: "hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux",
 		symbol: "HNT",
 		decimals: 8,
 		name: "Helium",
+		logo: "https://entities.nft.helium.io/v2/assets/hnt.png",
 	},
 	{
 		address: "orcaEKTdK7LKz57vaAYr9QeNsVEPfiu6QeMU1kektZE",
@@ -95,24 +98,28 @@ const TOKENS: SwapToken[] = [
 		symbol: "jitoSOL",
 		decimals: 9,
 		name: "Jito Staked SOL",
+		logo: "https://storage.googleapis.com/token-metadata/JitoSOL-256.png",
 	},
 	{
 		address: "85VBFQZC9TZkfaptBWjvUw7YbZjy52A6mjtPGjstQAmQ",
 		symbol: "W",
 		decimals: 6,
 		name: "Wormhole",
+		logo: "https://wormhole.com/token.png",
 	},
 	{
 		address: "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr",
 		symbol: "POPCAT",
 		decimals: 9,
 		name: "Popcat",
+		logo: "https://arweave.net/A1etRNMKxhlNGTf-gNBtJ75QJJ4NJtbKh_UXQTlLXzI",
 	},
 	{
 		address: "MEW1gQWJ3nEXg2qgERiKu7FAFj79PHvQVREQUzScPP5",
 		symbol: "MEW",
 		decimals: 5,
 		name: "cat in a dogs world",
+		logo: "https://bafkreidlwyr565dxtao2ipsze6bmzpszqzybz7sqi2zaet5fs7k53henju.ipfs.nftstorage.link",
 	},
 ]
 
