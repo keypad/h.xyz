@@ -1,12 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 const BASE = "https://api-partner.houdiniswap.com"
-const KEY = process.env.HOUDINI_API_KEY || ""
+const RAW = process.env.HOUDINI_API_KEY || ""
+const KEY = RAW.includes(":") ? RAW.split(":")[0] : RAW
 
 const STRIP = ["x-forwarded-for", "x-real-ip", "cf-connecting-ip", "x-vercel-forwarded-for"]
 
 function headers() {
-	const h: Record<string, string> = { "Content-Type": "application/json" }
+	const h: Record<string, string> = {}
 	if (KEY) h.Authorization = KEY
 	return h
 }
