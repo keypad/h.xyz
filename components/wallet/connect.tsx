@@ -1,16 +1,56 @@
 "use client"
 
 import { useWallet } from "@solana/wallet-adapter-react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useConnect } from "wagmi"
 import { useWalletContext } from "./context"
+
+type WalletItem = {
+	id: string
+	name: string
+	icon?: string
+	go: () => void
+}
+
+function useEvmWallets(): WalletItem[] {
+	const { connect, connectors } = useConnect()
+	return useMemo(() => {
+		const seen = new Map<string, WalletItem>()
+		for (const c of connectors) {
+			const key = c.name.toLowerCase()
+			const existing = seen.get(key)
+			if (existing && !existing.icon && c.icon) {
+				seen.set(key, { id: c.id, name: c.name, icon: c.icon, go: () => connect({ connector: c }) })
+			} else if (!existing) {
+				seen.set(key, { id: c.id, name: c.name, icon: c.icon, go: () => connect({ connector: c }) })
+			}
+		}
+		return Array.from(seen.values())
+	}, [connectors, connect])
+}
+
+function useSolWallets(): WalletItem[] {
+	const sol = useWallet()
+	return useMemo(
+		() =>
+			sol.wallets.map((w) => ({
+				id: w.adapter.name,
+				name: w.adapter.name,
+				icon: w.adapter.icon,
+				go: () => sol.select(w.adapter.name),
+			})),
+		[sol],
+	)
+}
 
 export default function ConnectButton() {
 	const { connecting, chain } = useWalletContext()
 	const [open, setOpen] = useState(false)
 	const ref = useRef<HTMLDivElement>(null)
-	const { connect: evmConnect, connectors } = useConnect()
 	const sol = useWallet()
+	const evmItems = useEvmWallets()
+	const solItems = useSolWallets()
+	const items = chain === "solana" ? solItems : evmItems
 
 	useEffect(() => {
 		if (!open) return
@@ -45,21 +85,6 @@ export default function ConnectButton() {
 			</button>
 		)
 	}
-
-	const items =
-		chain === "solana"
-			? sol.wallets.map((w) => ({
-					id: w.adapter.name,
-					name: w.adapter.name,
-					icon: w.adapter.icon,
-					go: () => sol.select(w.adapter.name),
-				}))
-			: connectors.map((c) => ({
-					id: c.id,
-					name: c.name,
-					icon: c.icon,
-					go: () => evmConnect({ connector: c }),
-				}))
 
 	return (
 		<div className="relative" ref={ref}>
