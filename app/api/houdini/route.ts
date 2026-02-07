@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-const BASE = "https://api.houdiniswap.com/api/v2"
+const BASE = "https://api-partner.houdiniswap.com"
 const KEY = process.env.HOUDINI_API_KEY || ""
 
 const STRIP = ["x-forwarded-for", "x-real-ip", "cf-connecting-ip", "x-vercel-forwarded-for"]
@@ -13,26 +13,26 @@ export async function GET(req: Request) {
 	const params = new URLSearchParams()
 
 	if (action === "quote") {
-		endpoint = "/estimate"
+		endpoint = "/quote"
+		params.set("amount", searchParams.get("amount") || "")
 		params.set("from", searchParams.get("from") || "")
 		params.set("to", searchParams.get("to") || "")
-		params.set("amount", searchParams.get("amount") || "")
+		params.set("anonymous", "true")
 	} else if (action === "exchange") {
 		endpoint = "/exchange"
+		params.set("amount", searchParams.get("amount") || "")
 		params.set("from", searchParams.get("from") || "")
 		params.set("to", searchParams.get("to") || "")
-		params.set("amount", searchParams.get("amount") || "")
-		params.set("address", searchParams.get("address") || "")
+		params.set("addressTo", searchParams.get("address") || "")
+		params.set("anonymous", "true")
 	} else if (action === "tokens") {
-		endpoint = "/currencies"
+		endpoint = "/tokens"
 	} else {
 		return NextResponse.json({ error: "invalid action" }, { status: 400 })
 	}
 
-	const headers: Record<string, string> = {
-		"Content-Type": "application/json",
-	}
-	if (KEY) headers["x-api-key"] = KEY
+	const headers: Record<string, string> = {}
+	if (KEY) headers.Authorization = KEY
 
 	const upstream = await fetch(`${BASE}${endpoint}?${params}`, {
 		headers,
