@@ -92,12 +92,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		refreshKey.current++
 		setInput(output)
 		setOutput(input)
-		if (quote)
-			setAmount(
-				Number.parseFloat(quote.outputAmount)
-					.toFixed(6)
-					.replace(/\.?0+$/, ""),
-			)
+		if (quote) setAmount(Number.parseFloat(quote.outputAmount).toFixed(6).replace(/\.?0+$/, ""))
 	}
 
 	const execute = async () => {
@@ -117,10 +112,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 
 	return (
 		<form
-			onSubmit={(e) => {
-				e.preventDefault()
-				execute()
-			}}
+			onSubmit={(e) => { e.preventDefault(); execute() }}
 			className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-4 md:p-5"
 		>
 			<Status result={result} onClose={() => setResult(null)} />
@@ -146,10 +138,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 				token={input}
 				tokens={tokenList}
 				exclude={output.address}
-				onAmount={(v) => {
-					setAmount(v)
-					refreshKey.current++
-				}}
+				onAmount={(v) => { setAmount(v); refreshKey.current++ }}
 				onSelect={setInput}
 			/>
 			<FlipButton flipped={flipped} onFlip={flip} />
@@ -177,13 +166,24 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 			</div>
 			{isHoudini ? (
 				<div className="mt-4 flex flex-col gap-2">
-					<input
-						type="text"
-						value={destination}
-						onChange={(e) => setDestination(e.target.value.trim())}
-						placeholder="destination address"
-						className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 font-mono text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/[0.12]"
-					/>
+					<div className="relative">
+						<input
+							type="text"
+							value={destination}
+							onChange={(e) => setDestination(e.target.value.trim())}
+							placeholder="destination address"
+							className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 pr-16 font-mono text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/[0.12]"
+						/>
+						{!destination && (
+							<button
+								type="button"
+								onClick={() => navigator.clipboard.readText().then(setDestination)}
+								className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2.5 py-1 text-[11px] text-white/25 transition-colors hover:bg-white/[0.06] hover:text-white/40"
+							>
+								paste
+							</button>
+						)}
+					</div>
 					<SwapButton disabled={!quote || !destination} error={error} onClick={execute} />
 				</div>
 			) : !connected ? (
