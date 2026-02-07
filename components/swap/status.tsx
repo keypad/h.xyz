@@ -89,6 +89,7 @@ export default function Status({
 							href={result.explorer}
 							target="_blank"
 							rel="noopener noreferrer"
+							referrerPolicy="no-referrer"
 							className="text-[11px] text-[#EC4612] transition-opacity hover:opacity-80"
 						>
 							view on explorer

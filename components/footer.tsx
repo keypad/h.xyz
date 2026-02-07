@@ -32,6 +32,7 @@ function Column({ title, items }: { title: string; items: typeof links.products 
 						href={item.href}
 						target="_blank"
 						rel="noopener noreferrer"
+						referrerPolicy="no-referrer"
 						className="text-sm text-white/50 transition-colors hover:text-white"
 					>
 						{item.label}
