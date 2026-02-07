@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import Ghost from "@/components/ghost"
 
@@ -11,6 +12,7 @@ const links = [
 ]
 
 export default function Header() {
+	const pathname = usePathname()
 	const [scrolled, setScrolled] = useState(false)
 
 	useEffect(() => {
@@ -30,16 +32,21 @@ export default function Header() {
 					<Ghost className="h-5 w-auto text-white" />
 				</Link>
 				<div className="flex-1" />
-				{links.map((link) => (
-					<Link
-						key={link.label}
-						href={link.href}
-						className="hidden items-center gap-2 px-4 py-2 text-sm text-white/50 transition-colors hover:text-white md:flex"
-					>
-						<span className="h-1.5 w-1.5 rounded-full" style={{ background: link.color }} />
-						{link.label}
-					</Link>
-				))}
+				{links.map((link) => {
+					const active = pathname?.startsWith(link.href)
+					return (
+						<Link
+							key={link.label}
+							href={link.href}
+							className={`hidden items-center gap-2 px-4 py-2 text-sm transition-colors hover:text-white md:flex ${
+								active ? "text-white" : "text-white/50"
+							}`}
+						>
+							<span className="h-1.5 w-1.5 rounded-full" style={{ background: link.color }} />
+							{link.label}
+						</Link>
+					)
+				})}
 				<Link
 					href="/swap"
 					className="rounded-full bg-white px-4 py-2.5 text-sm font-medium text-fg transition-opacity hover:opacity-90 md:ml-2 md:px-5"
