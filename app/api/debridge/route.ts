@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-const BASE = "https://deswap.debridge.finance/v1.0"
+const BASE = "https://dln.debridge.finance/v1.0"
 const REFERRAL = process.env.DEBRIDGE_REFERRAL_CODE || ""
 
 const STRIP = ["x-forwarded-for", "x-real-ip", "cf-connecting-ip", "x-vercel-forwarded-for"]
