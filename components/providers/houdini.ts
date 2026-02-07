@@ -1,4 +1,4 @@
-import type { ProviderModule, Quote, SwapToken } from "./types"
+import type { ProviderModule, SwapToken } from "./types"
 
 const POPULAR: SwapToken[] = [
 	{ address: "ETH", symbol: "ETH", decimals: 18, name: "Ethereum" },
@@ -43,7 +43,7 @@ export const houdini: ProviderModule = {
 			rate: inputNum > 0 ? outputNum / inputNum : 0,
 			route: "houdini privacy route",
 			_raw: data,
-		} as Quote & { _raw: any }
+		}
 	},
 
 	swap: async ({ quote, sender }) => {
