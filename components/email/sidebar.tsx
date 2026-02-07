@@ -17,14 +17,9 @@ export default function Sidebar() {
 	return (
 		<aside className="flex h-full flex-col border-r border-white/[0.06] bg-[#1e1c1a]">
 			<div className="px-5 pt-5 pb-4">
-				<div className="flex items-center gap-2">
-					<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f996ee]/10">
-						<span className="text-xs font-semibold text-[#f996ee]">h</span>
-					</div>
-					<div className="flex flex-col">
-						<span className="text-[13px] font-medium text-white">hi@h.xyz</span>
-						<span className="text-[11px] text-white/20">encrypted</span>
-					</div>
+				<div className="flex flex-col">
+					<span className="text-[13px] font-medium text-white">hi@h.xyz</span>
+					<span className="text-[11px] text-white/20">encrypted</span>
 				</div>
 			</div>
 			<nav className="flex-1 px-3">
