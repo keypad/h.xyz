@@ -55,8 +55,12 @@ function SwapForm({ providerId }: { providerId: string }) {
 			return
 		}
 		setLoading(true)
-		const q = await mod.quote({ input, output, amount, sender: address ?? undefined })
-		setQuote(q)
+		try {
+			const q = await mod.quote({ input, output, amount, sender: address ?? undefined })
+			setQuote(q)
+		} catch {
+			setQuote(null)
+		}
 		setLoading(false)
 	}, [mod, input, output, amount, address])
 
