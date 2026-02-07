@@ -1,6 +1,7 @@
 "use client"
 
 import Compose from "@/components/email/compose"
+import Help from "@/components/email/help"
 import { Provider, useEmail } from "@/components/email/context"
 import Detail from "@/components/email/detail"
 import List from "@/components/email/list"
@@ -38,6 +39,7 @@ function Layout() {
 				</div>
 			</div>
 			<Compose />
+			<Help />
 		</div>
 	)
 }
