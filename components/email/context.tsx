@@ -74,8 +74,12 @@ export function Provider({ children }: { children: ReactNode }) {
 		])
 	}
 
-	const trash = (id: number) =>
+	const trash = (id: number) => {
 		setEmails((prev) => prev.map((e) => (e.id === id ? { ...e, folder: "trash" } : e)))
+		const idx = filtered.findIndex((e) => e.id === id)
+		const next = filtered[idx + 1] ?? filtered[idx - 1]
+		setSelected(next?.id ?? null)
+	}
 
 	const reply = (id: number) => {
 		const email = emails.find((e) => e.id === id)

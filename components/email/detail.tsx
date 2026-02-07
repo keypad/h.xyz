@@ -91,10 +91,7 @@ export default function Detail() {
 					</button>
 					<button
 						type="button"
-						onClick={() => {
-							trash(active.id)
-							setSelected(null)
-						}}
+						onClick={() => trash(active.id)}
 						className="rounded-xl border border-white/[0.06] px-4 py-2 text-[12px] text-white/25 transition-colors hover:border-[#EC4612]/20 hover:text-[#EC4612]/60"
 					>
 						trash

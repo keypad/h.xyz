@@ -56,10 +56,7 @@ export function useShortcuts() {
 					}
 					break
 				case "d":
-					if (selected) {
-						trash(selected)
-						setSelected(null)
-					}
+					if (selected) trash(selected)
 					break
 			}
 		}
