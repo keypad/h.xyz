@@ -4,7 +4,7 @@ import { useEmail } from "@/components/email/context"
 import { ArrowLeftIcon } from "@/components/email/icons"
 
 export default function Detail() {
-	const { selected, emails, setSelected, setComposing } = useEmail()
+	const { selected, emails, setSelected, setComposing, toggleStar } = useEmail()
 	const active = emails.find((e) => e.id === selected)
 
 	if (!active) {
@@ -35,18 +35,26 @@ export default function Detail() {
 							<span className="truncate font-mono text-[11px] text-white/25">to {active.to}</span>
 						</div>
 					</div>
-					{active.starred && (
+					<button
+						type="button"
+						onClick={() => toggleStar(active.id)}
+						className="shrink-0 transition-colors"
+					>
 						<svg
 							aria-hidden="true"
 							width="14"
 							height="14"
 							viewBox="0 0 24 24"
-							fill="#f996ee"
-							className="shrink-0 text-[#f996ee]"
+							fill={active.starred ? "#f996ee" : "none"}
+							stroke={active.starred ? "none" : "currentColor"}
+							strokeWidth="1.5"
+							className={
+								active.starred ? "text-[#f996ee]" : "text-white/15 hover:text-white/30"
+							}
 						>
 							<path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
 						</svg>
-					)}
+					</button>
 				</div>
 				<h3 className="mt-2 text-[15px] font-medium text-white/80">{active.subject}</h3>
 			</div>
