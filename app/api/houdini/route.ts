@@ -39,6 +39,10 @@ export async function GET(req: NextRequest) {
 			cache: "no-store",
 		})
 
+		if (!upstream.headers.get("content-type")?.includes("json")) {
+			return NextResponse.json({ error: "upstream" }, { status: upstream.status || 502 })
+		}
+
 		const data = await upstream.json()
 		const response = NextResponse.json(data, { status: upstream.status })
 		response.headers.set("Cache-Control", "no-store")
@@ -75,6 +79,10 @@ export async function POST(req: NextRequest) {
 			}),
 			cache: "no-store",
 		})
+
+		if (!upstream.headers.get("content-type")?.includes("json")) {
+			return NextResponse.json({ error: "upstream" }, { status: upstream.status || 502 })
+		}
 
 		const data = await upstream.json()
 		const response = NextResponse.json(data, { status: upstream.status })
