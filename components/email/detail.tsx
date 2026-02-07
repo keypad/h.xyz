@@ -4,7 +4,7 @@ import { useEmail } from "@/components/email/context"
 import { ArrowLeftIcon } from "@/components/email/icons"
 
 export default function Detail() {
-	const { selected, emails, setSelected, reply, forward, toggleStar } = useEmail()
+	const { selected, emails, setSelected, reply, forward, toggleStar, trash } = useEmail()
 	const active = emails.find((e) => e.id === selected)
 
 	if (!active) {
@@ -88,6 +88,16 @@ export default function Detail() {
 						className="rounded-xl border border-white/[0.06] px-4 py-2 text-[12px] text-white/25 transition-colors hover:border-white/10 hover:text-white/40"
 					>
 						forward
+					</button>
+					<button
+						type="button"
+						onClick={() => {
+							trash(active.id)
+							setSelected(null)
+						}}
+						className="rounded-xl border border-white/[0.06] px-4 py-2 text-[12px] text-white/25 transition-colors hover:border-[#EC4612]/20 hover:text-[#EC4612]/60"
+					>
+						trash
 					</button>
 				</div>
 				{active.encrypted && (
