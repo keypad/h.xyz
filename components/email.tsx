@@ -31,7 +31,7 @@ export default function Email() {
 						</span>
 					))}
 					<a
-						href="/app"
+						href="/email/register"
 						className="rounded-full bg-[#f996ee] px-6 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
 					>
 						claim yours

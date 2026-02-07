@@ -19,7 +19,7 @@ export default function Hero() {
 						explore
 					</a>
 					<a
-						href="/app"
+						href="/swap"
 						className="flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-medium text-fg transition-opacity hover:opacity-90"
 					>
 						launch app
