@@ -158,7 +158,11 @@ export default function Swapcard() {
 						inputMode="decimal"
 						value={amount}
 						onFocus={(e) => e.target.select()}
-						onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+						onChange={(e) => {
+						let v = e.target.value.replace(/[^0-9.]/g, "")
+						if (v.split(".").length > 2) v = v.slice(0, v.lastIndexOf("."))
+						setAmount(v)
+					}}
 						className="w-0 min-w-0 flex-1 bg-transparent text-3xl font-medium text-white outline-none placeholder:text-white/20"
 						placeholder="0"
 					/>
