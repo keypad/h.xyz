@@ -26,7 +26,7 @@ export default function Header() {
 					scrolled ? "bg-[#1a1816]/80 backdrop-blur-xl" : ""
 				}`}
 			>
-				<Link href="/">
+				<Link href="/" className="flex h-11 items-center">
 					<Ghost className="h-5 w-auto text-white" />
 				</Link>
 				<div className="flex-1" />
@@ -42,7 +42,7 @@ export default function Header() {
 				))}
 				<Link
 					href="/swap"
-					className="rounded-full bg-white px-4 py-2 text-sm font-medium text-fg transition-opacity hover:opacity-90 md:ml-2 md:px-5"
+					className="rounded-full bg-white px-4 py-2.5 text-sm font-medium text-fg transition-opacity hover:opacity-90 md:ml-2 md:px-5"
 				>
 					launch app
 				</Link>
