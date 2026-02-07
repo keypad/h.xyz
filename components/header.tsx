@@ -38,21 +38,23 @@ export default function Header() {
 						<Link
 							key={link.label}
 							href={link.href}
-							className={`hidden items-center gap-2 px-4 py-2 text-sm transition-colors hover:text-white md:flex ${
+							className={`flex items-center gap-2 px-3 py-2 text-sm transition-colors hover:text-white md:px-4 ${
 								active ? "text-white" : "text-white/50"
 							}`}
 						>
 							<span className="h-1.5 w-1.5 rounded-full" style={{ background: link.color }} />
-							{link.label}
+							<span className="hidden md:inline">{link.label}</span>
 						</Link>
 					)
 				})}
-				<Link
-					href="/swap"
-					className="rounded-full bg-white px-4 py-2.5 text-sm font-medium text-fg transition-opacity hover:opacity-90 md:ml-2 md:px-5"
-				>
-					launch app
-				</Link>
+				{!pathname?.startsWith("/swap") && !pathname?.startsWith("/email") && (
+					<Link
+						href="/swap"
+						className="rounded-full bg-white px-4 py-2.5 text-sm font-medium text-fg transition-opacity hover:opacity-90 md:ml-2 md:px-5"
+					>
+						launch app
+					</Link>
+				)}
 			</nav>
 		</header>
 	)
