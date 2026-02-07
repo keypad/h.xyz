@@ -1,16 +1,31 @@
 import { NextResponse } from "next/server"
 
 const BASE = "https://api.jup.ag/swap/v1"
+const TOKENS_URL = "https://lite-api.jup.ag/tokens/v2/mints/tradable"
 const KEY = process.env.JUPITER_API_KEY || ""
 
 const STRIP = ["x-forwarded-for", "x-real-ip", "cf-connecting-ip", "x-vercel-forwarded-for"]
 
+function strip(response: NextResponse) {
+	response.headers.set("Cache-Control", "no-store")
+	for (const h of STRIP) response.headers.delete(h)
+	return response
+}
+
 export async function GET(req: Request) {
 	const { searchParams } = new URL(req.url)
+	const action = searchParams.get("action")
+
+	if (action === "tokens") {
+		const upstream = await fetch(TOKENS_URL, { cache: "no-store" })
+		if (!upstream.ok) return strip(NextResponse.json([], { status: upstream.status }))
+		const data = await upstream.json()
+		return strip(NextResponse.json(data.slice(0, 100)))
+	}
 
 	const params = new URLSearchParams()
 	for (const [key, value] of searchParams.entries()) {
-		params.set(key, value)
+		if (key !== "action") params.set(key, value)
 	}
 
 	const headers: Record<string, string> = {}
@@ -22,11 +37,7 @@ export async function GET(req: Request) {
 	})
 
 	const data = await upstream.json()
-
-	const response = NextResponse.json(data, { status: upstream.status })
-	response.headers.set("Cache-Control", "no-store")
-	for (const h of STRIP) response.headers.delete(h)
-	return response
+	return strip(NextResponse.json(data, { status: upstream.status }))
 }
 
 export async function POST(req: Request) {
@@ -43,9 +54,5 @@ export async function POST(req: Request) {
 	})
 
 	const data = await upstream.json()
-
-	const response = NextResponse.json(data, { status: upstream.status })
-	response.headers.set("Cache-Control", "no-store")
-	for (const h of STRIP) response.headers.delete(h)
-	return response
+	return strip(NextResponse.json(data, { status: upstream.status }))
 }
