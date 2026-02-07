@@ -57,7 +57,7 @@ export default function Panel() {
 									style={{ background: p.color }}
 								/>
 							)}
-							{p.id === "cow" ? "cow" : p.id === "houdini" ? "houdini" : p.id}
+							{p.id}
 						</button>
 					))}
 				</div>
