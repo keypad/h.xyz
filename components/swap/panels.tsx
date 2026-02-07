@@ -116,6 +116,35 @@ export function LiveDot() {
 	)
 }
 
+export function Destination({
+	value,
+	onChange,
+}: {
+	value: string
+	onChange: (v: string) => void
+}) {
+	return (
+		<div className="relative">
+			<input
+				type="text"
+				value={value}
+				onChange={(e) => onChange(e.target.value.trim())}
+				placeholder="destination address"
+				className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 pr-16 font-mono text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/[0.12]"
+			/>
+			{!value && (
+				<button
+					type="button"
+					onClick={() => navigator.clipboard.readText().then(onChange)}
+					className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2.5 py-1 text-[11px] text-white/25 transition-colors hover:bg-white/[0.06] hover:text-white/40"
+				>
+					paste
+				</button>
+			)}
+		</div>
+	)
+}
+
 export function FlipButton({ flipped, onFlip }: { flipped: boolean; onFlip: () => void }) {
 	return (
 		<div className="relative my-1 flex justify-center">

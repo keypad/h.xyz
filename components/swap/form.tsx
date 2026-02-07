@@ -8,7 +8,7 @@ import { useWalletContext } from "../wallet/context"
 import Details from "./details"
 import { classify, withRetry, withTimeout } from "./errors"
 import { modules } from "./modules"
-import { FlipButton, LiveDot, PayPanel, ReceivePanel, SwapButton } from "./panels"
+import { Destination, FlipButton, LiveDot, PayPanel, ReceivePanel, SwapButton } from "./panels"
 import Rate from "./rate"
 import Refresh from "./refresh"
 import Settings, { useSlippage } from "./settings"
@@ -178,24 +178,7 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 			</div>
 			{isHoudini ? (
 				<div className="mt-4 flex flex-col gap-2">
-					<div className="relative">
-						<input
-							type="text"
-							value={destination}
-							onChange={(e) => setDestination(e.target.value.trim())}
-							placeholder="destination address"
-							className="w-full rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 pr-16 font-mono text-sm text-white outline-none transition-colors placeholder:text-white/25 focus:border-white/[0.12]"
-						/>
-						{!destination && (
-							<button
-								type="button"
-								onClick={() => navigator.clipboard.readText().then(setDestination)}
-								className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2.5 py-1 text-[11px] text-white/25 transition-colors hover:bg-white/[0.06] hover:text-white/40"
-							>
-								paste
-							</button>
-						)}
-					</div>
+					<Destination value={destination} onChange={setDestination} />
 					<SwapButton disabled={!quote || !destination} error={error} onClick={execute} />
 				</div>
 			) : !connected ? (
