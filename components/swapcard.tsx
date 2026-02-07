@@ -225,12 +225,12 @@ export default function Swapcard() {
 				</div>
 			</div>
 
-			<button
-				type="button"
-				className="mt-4 w-full rounded-xl bg-[#EC4612] py-4 text-sm font-medium text-white transition-all hover:brightness-110"
+			<a
+				href="/swap"
+				className="mt-4 block w-full rounded-xl bg-[#EC4612] py-4 text-center text-sm font-medium text-white transition-all hover:brightness-110"
 			>
 				swap
-			</button>
+			</a>
 		</div>
 	)
 }
