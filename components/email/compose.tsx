@@ -25,6 +25,11 @@ export default function Compose() {
 		setBody("")
 	}
 
+	const doSend = () => {
+		if (to.trim()) send(to.trim(), subject || "(no subject)", body)
+		close()
+	}
+
 	return (
 		<div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
 			<button
@@ -32,7 +37,12 @@ export default function Compose() {
 				className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-[overlayshow_150ms_ease-out]"
 				onClick={close}
 			/>
-			<div className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl animate-[slideup_250ms_ease-out]">
+			<div
+				className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl animate-[slideup_250ms_ease-out]"
+				onKeyDown={(e) => {
+					if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && to.trim()) doSend()
+				}}
+			>
 				<div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3.5">
 					<span className="text-[13px] font-medium text-white">new message</span>
 					<button
@@ -80,10 +90,7 @@ export default function Compose() {
 					<button
 						type="button"
 						disabled={!to.trim()}
-						onClick={() => {
-							if (to.trim()) send(to.trim(), subject || "(no subject)", body)
-							close()
-						}}
+						onClick={doSend}
 						className="flex items-center gap-2 rounded-xl bg-[#f996ee] px-5 py-2 text-[12px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-40"
 					>
 						<SendIcon />
