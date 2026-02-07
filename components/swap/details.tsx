@@ -24,6 +24,11 @@ export default function Details({
 					1 {input.symbol} = {fmt(quote.rate)} {quote.output.symbol}
 				</span>
 			</Row>
+			<Row label="min. received">
+				<span className="font-mono text-white/35">
+					{fmt(Number.parseFloat(quote.outputAmount) * (1 - slippage / 100))} {quote.output.symbol}
+				</span>
+			</Row>
 			{quote.route && <Row label="route">{quote.route}</Row>}
 			{quote.fee && <Row label="fees">{quote.fee}</Row>}
 			<Row label="slippage">{slippage}%</Row>
