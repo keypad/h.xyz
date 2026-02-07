@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { useEmail } from "@/components/email/context"
+import { LABEL_COLORS } from "@/components/email/data"
 import Empty from "@/components/email/empty"
 import { ClipIcon, LockIcon } from "@/components/email/icons"
 
@@ -59,13 +60,27 @@ export default function List() {
 							<span className="text-[11px] text-white/15">{email.time}</span>
 						</div>
 					</div>
-					<p
-						className={`mt-0.5 truncate text-[13px] ${
-							email.unread ? "font-medium text-white/70" : "text-white/30"
-						}`}
-					>
-						{email.subject}
-					</p>
+					<div className="mt-0.5 flex items-center gap-1.5 overflow-hidden">
+						<p
+							className={`truncate text-[13px] ${
+								email.unread ? "font-medium text-white/70" : "text-white/30"
+							}`}
+						>
+							{email.subject}
+						</p>
+						{email.labels?.map((l) => (
+							<span
+								key={l}
+								className="shrink-0 rounded px-1.5 py-0.5 text-[9px] font-medium"
+								style={{
+									background: `${LABEL_COLORS[l] ?? "#666"}20`,
+									color: LABEL_COLORS[l] ?? "#666",
+								}}
+							>
+								{l}
+							</span>
+						))}
+					</div>
 					<p className="mt-1 line-clamp-1 text-[12px] leading-relaxed text-white/15">
 						{email.preview}
 					</p>

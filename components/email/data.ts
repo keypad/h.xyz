@@ -14,12 +14,19 @@ export type Email = {
 	quote?: string
 	after?: string
 	attachment?: string
+	labels?: string[]
 }
 
 export type Folder = {
 	id: string
 	label: string
 	icon: string
+}
+
+export const LABEL_COLORS: Record<string, string> = {
+	protocol: "#EC4612",
+	security: "#EF4444",
+	governance: "#8B5CF6",
 }
 
 export const folders: Folder[] = [
@@ -49,6 +56,11 @@ export const folders: Folder[] = [
 		icon: "M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z",
 	},
 	{
+		id: "spam",
+		label: "spam",
+		icon: "M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z",
+	},
+	{
 		id: "trash",
 		label: "trash",
 		icon: "M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0",
@@ -73,6 +85,7 @@ export const emails: Email[] = [
 		body: "hey,\n\nare you coming to ethdenver next week? we just shipped the new batch auction engine — 40% better surplus capture across the board.\n\nwant to walk you through the numbers over dinner wednesday. also need your input on something:",
 		after:
 			"the discussion is in the #protocol channel. would be good to align before the talk on thursday.\n\nlet me know.\n\n— bob",
+		labels: ["protocol"],
 	},
 	{
 		id: 2,
@@ -88,6 +101,7 @@ export const emails: Email[] = [
 		encrypted: true,
 		body: "hi,\n\nwe've identified a potential vulnerability in the latest consensus client update (v4.2.1). all validator operators should update to v4.2.2 immediately.\n\nthis patch addresses a critical edge case in block attestation that could lead to incorrect finality under specific network conditions.\n\nplease update your nodes at your earliest convenience.\n\n— ethereum foundation security team",
 		attachment: "advisory-2026-003.txt",
+		labels: ["security"],
 	},
 	{
 		id: 3,
@@ -116,6 +130,7 @@ export const emails: Email[] = [
 		starred: false,
 		encrypted: false,
 		body: "a new governance proposal has been submitted to the uniswap dao.\n\nproposal UNI-247: fee tier adjustments for v4 concentrated liquidity pools. the proposal suggests reducing the default fee from 0.3% to 0.25% for major pairs.\n\nvoting ends feb 14, 2026.\n\nview proposal and cast your vote on governance.uniswap.org",
+		labels: ["governance"],
 	},
 	{
 		id: 5,
@@ -215,6 +230,7 @@ export const emails: Email[] = [
 		encrypted: true,
 		body: "here's the full spec for the surplus distribution model.\n\nkey changes from v1:\n— proportional distribution instead of flat\n— 72h settlement window\n— retroactive rebates for high-volume traders\n\ni've attached the simulation results. the new model captures 40% more surplus while keeping gas costs flat.\n\nlet me know what you think.\n\n— bob",
 		attachment: "surplus-model-v2.pdf",
+		labels: ["protocol"],
 	},
 	{
 		id: 12,
@@ -243,6 +259,7 @@ export const emails: Email[] = [
 		starred: false,
 		encrypted: false,
 		body: "the aave risk council has proposed changes to the collateral factors for wstETH and rETH on ethereum mainnet.\n\nproposed changes:\n— wstETH LTV: 75% to 78%\n— rETH LTV: 72% to 75%\n\nvoting opens feb 8, 2026.\n\nreview the full proposal on governance.aave.com",
+		labels: ["governance"],
 	},
 	{
 		id: 14,
@@ -260,7 +277,7 @@ export const emails: Email[] = [
 	},
 	{
 		id: 15,
-		folder: "trash",
+		folder: "spam",
 		from: "noreply@scam.xyz",
 		to: "hi@h.xyz",
 		subject: "you won 10,000 USDT! claim now",
@@ -274,7 +291,7 @@ export const emails: Email[] = [
 	},
 	{
 		id: 16,
-		folder: "trash",
+		folder: "spam",
 		from: "token-launch@spam.io",
 		to: "hi@h.xyz",
 		subject: "exclusive presale: 1000x gem",

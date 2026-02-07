@@ -1,6 +1,7 @@
 "use client"
 
 import { useEmail } from "@/components/email/context"
+import { LABEL_COLORS } from "@/components/email/data"
 import { ArrowLeftIcon, ClipIcon } from "@/components/email/icons"
 
 export default function Detail() {
@@ -58,7 +59,21 @@ export default function Detail() {
 						</svg>
 					</button>
 				</div>
-				<h3 className="mt-2 text-[15px] font-medium text-white/80">{active.subject}</h3>
+				<div className="mt-2 flex items-center gap-2">
+					<h3 className="text-[15px] font-medium text-white/80">{active.subject}</h3>
+					{active.labels?.map((l) => (
+						<span
+							key={l}
+							className="shrink-0 rounded px-1.5 py-0.5 text-[9px] font-medium"
+							style={{
+								background: `${LABEL_COLORS[l] ?? "#666"}20`,
+								color: LABEL_COLORS[l] ?? "#666",
+							}}
+						>
+							{l}
+						</span>
+					))}
+				</div>
 			</div>
 			<div className="flex-1 overflow-y-auto px-6 py-6">
 				{active.attachment && (
