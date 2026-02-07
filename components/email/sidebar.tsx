@@ -7,6 +7,11 @@ import { LockIcon } from "@/components/email/icons"
 export default function Sidebar() {
 	const { folder, setFolder, setSelected, emails, mobile, setMobile } = useEmail()
 
+	const counts = (id: string) => {
+		if (id === "starred") return emails.filter((e) => e.starred).length || undefined
+		return emails.filter((e) => e.folder === id && e.unread).length || undefined
+	}
+
 	const switchFolder = (id: string) => {
 		setFolder(id)
 		const first = emails.find((e) => e.folder === id)
@@ -48,9 +53,9 @@ export default function Sidebar() {
 							<path d={f.icon} />
 						</svg>
 						<span className="flex-1 text-[13px]">{f.label}</span>
-						{f.count && f.count > 0 && (
+						{counts(f.id) && (
 							<span className="rounded-full bg-[#f996ee]/15 px-2 py-0.5 text-[10px] font-medium text-[#f996ee]">
-								{f.count}
+								{counts(f.id)}
 							</span>
 						)}
 					</button>
