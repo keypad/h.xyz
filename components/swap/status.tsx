@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { SwapResult } from "../providers/types"
 
 function Copy({ text }: { text: string }) {
@@ -28,6 +28,12 @@ export default function Status({
 	result: SwapResult | null
 	onClose: () => void
 }) {
+	useEffect(() => {
+		if (result?.status !== "success") return
+		const id = setTimeout(onClose, 8000)
+		return () => clearTimeout(id)
+	}, [result, onClose])
+
 	if (!result) return null
 
 	return (
