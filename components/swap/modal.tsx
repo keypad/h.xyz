@@ -20,6 +20,7 @@ export default function Modal({
 }) {
 	const [query, setQuery] = useState("")
 	const [category, setCategory] = useState<Category>("all")
+	const [focus, setFocus] = useState(0)
 	const inputRef = useRef<HTMLInputElement>(null)
 
 	useEffect(() => {
@@ -46,6 +47,10 @@ export default function Modal({
 		})
 	}, [tokens, query, category, exclude, selected.chainId])
 
+	useEffect(() => {
+		setFocus(0)
+	}, [filtered])
+
 	const popular = useMemo(() => {
 		const seen = new Set<string>()
 		return tokens
@@ -60,15 +65,23 @@ export default function Modal({
 	useEffect(() => {
 		const handler = (e: KeyboardEvent) => {
 			if (e.key === "Escape") onClose()
+			if (e.key === "ArrowDown") {
+				e.preventDefault()
+				setFocus((i) => (i < filtered.length - 1 ? i + 1 : 0))
+			}
+			if (e.key === "ArrowUp") {
+				e.preventDefault()
+				setFocus((i) => (i > 0 ? i - 1 : filtered.length - 1))
+			}
 			if (e.key === "Enter" && filtered.length > 0) {
 				e.preventDefault()
-				onSelect(filtered[0])
+				onSelect(filtered[focus])
 				onClose()
 			}
 		}
 		document.addEventListener("keydown", handler)
 		return () => document.removeEventListener("keydown", handler)
-	}, [onClose, onSelect, filtered])
+	}, [onClose, onSelect, filtered, focus])
 
 	const pick = (t: SwapToken) => {
 		onSelect(t)
@@ -156,7 +169,7 @@ export default function Modal({
 					tokens={filtered}
 					selected={selected}
 					onPick={pick}
-					highlight={query && filtered.length > 0 ? uid(filtered[0]) : undefined}
+					focusIndex={focus}
 				/>
 			</div>
 		</div>

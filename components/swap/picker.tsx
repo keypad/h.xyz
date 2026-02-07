@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import type { SwapToken } from "../providers/types"
 import Avatar, { chainLabel, uid } from "./avatar"
 
@@ -64,31 +65,42 @@ export function TokenList({
 	tokens,
 	selected,
 	onPick,
-	highlight,
+	focusIndex,
 }: {
 	tokens: SwapToken[]
 	selected: SwapToken
 	onPick: (t: SwapToken) => void
-	highlight?: string
+	focusIndex?: number
 }) {
+	const refs = useRef<Map<number, HTMLButtonElement>>(new Map())
+
+	useEffect(() => {
+		if (focusIndex == null) return
+		const el = refs.current.get(focusIndex)
+		el?.scrollIntoView({ block: "nearest", behavior: "smooth" })
+	}, [focusIndex])
+
 	return (
 		<div className="mt-3 min-h-0 flex-1 overflow-y-auto border-t border-white/[0.04] px-2 py-2 md:max-h-72">
 			{tokens.length === 0 && (
 				<div className="py-8 text-center text-sm text-white/20">no tokens found</div>
 			)}
-			{tokens.map((t) => {
+			{tokens.map((t, i) => {
 				const id = uid(t)
 				const active = t.address === selected.address && t.chainId === selected.chainId
-				const first = highlight === id
+				const focused = focusIndex === i
 				return (
 					<button
 						key={id}
+						ref={(el) => {
+							if (el) refs.current.set(i, el)
+						}}
 						type="button"
 						onClick={() => onPick(t)}
 						className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors md:py-2.5 ${
 							active
 								? "bg-white/[0.06] text-white"
-								: first
+								: focused
 									? "bg-white/[0.03] text-white"
 									: "text-white/60 hover:bg-white/[0.03] hover:text-white"
 						}`}
