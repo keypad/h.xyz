@@ -58,11 +58,13 @@ export function ReceivePanel({
 		<div className="rounded-xl bg-white/[0.03] p-4">
 			<span className="text-[11px] text-white/25">you receive</span>
 			<div className="mt-2 flex items-center justify-between gap-3">
-				<span
-					className={`text-2xl font-medium text-white transition-opacity duration-200 md:text-3xl ${loading ? "opacity-30" : ""}`}
-				>
-					{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "\u2014"}
-				</span>
+				{loading ? (
+					<div className="h-8 w-32 animate-pulse rounded-lg bg-white/[0.06] md:h-9" />
+				) : (
+					<span className="text-2xl font-medium text-white md:text-3xl">
+						{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "\u2014"}
+					</span>
+				)}
 				<Selector token={token} tokens={tokens} onSelect={onSelect} exclude={exclude} />
 			</div>
 			{error && error !== "enter an amount" && (
