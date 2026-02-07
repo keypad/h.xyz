@@ -8,7 +8,7 @@ import { useWalletContext } from "../wallet/context"
 import Details from "./details"
 import { classify, withRetry, withTimeout } from "./errors"
 import { fmt, modules } from "./modules"
-import { FlipButton, PayPanel, ReceivePanel, SwapButton } from "./panels"
+import { FlipButton, LiveDot, PayPanel, ReceivePanel, SwapButton } from "./panels"
 import Refresh from "./refresh"
 import Settings, { useSlippage } from "./settings"
 import Status from "./status"
@@ -65,11 +65,8 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 				signal,
 			)
 			if (signal.aborted) return
-			if (q) setQuote(q)
-			else {
-				setQuote(null)
-				setError("no route")
-			}
+			setQuote(q ?? null)
+			if (!q) setError("no route")
 		} catch (e) {
 			if (signal.aborted) return
 			setQuote(null)
@@ -94,7 +91,12 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		refreshKey.current++
 		setInput(output)
 		setOutput(input)
-		if (quote) setAmount(Number.parseFloat(quote.outputAmount).toFixed(6).replace(/\.?0+$/, ""))
+		if (quote)
+			setAmount(
+				Number.parseFloat(quote.outputAmount)
+					.toFixed(6)
+					.replace(/\.?0+$/, ""),
+			)
 	}
 
 	const execute = async () => {
@@ -113,17 +115,17 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	const prov = providers.find((p) => p.id === providerId)
 
 	return (
-		<div
+		<form
+			onSubmit={(e) => {
+				e.preventDefault()
+				execute()
+			}}
 			className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-4 md:p-5"
-			onKeyDown={(e) => e.key === "Enter" && !e.repeat && execute()}
 		>
 			<Status result={result} onClose={() => setResult(null)} />
 			<div className="mb-3 flex items-center justify-between px-1">
 				<div className="flex items-center gap-2 text-[11px] text-white/20">
-					<span className="relative flex h-1.5 w-1.5">
-						<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#BCEC79] opacity-75" />
-						<span className="inline-flex h-1.5 w-1.5 rounded-full bg-[#BCEC79]" />
-					</span>
+					<LiveDot />
 					{prov?.name}
 					{prov?.tag && <span className="text-white/10">· {prov.tag}</span>}
 				</div>
@@ -193,6 +195,6 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 					<SwapButton disabled={!quote} error={error} onClick={execute} />
 				</div>
 			)}
-		</div>
+		</form>
 	)
 }

@@ -82,7 +82,11 @@ export function SwapButton({
 	disabled,
 	error,
 	onClick,
-}: { disabled: boolean; error: string | null; onClick: () => void }) {
+}: {
+	disabled: boolean
+	error: string | null
+	onClick: () => void
+}) {
 	const hasError = error && error !== "enter an amount"
 	return (
 		<button
@@ -97,6 +101,15 @@ export function SwapButton({
 		>
 			{hasError || "swap"}
 		</button>
+	)
+}
+
+export function LiveDot() {
+	return (
+		<span className="relative flex h-1.5 w-1.5">
+			<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#BCEC79] opacity-75" />
+			<span className="inline-flex h-1.5 w-1.5 rounded-full bg-[#BCEC79]" />
+		</span>
 	)
 }
 
