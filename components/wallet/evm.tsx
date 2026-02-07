@@ -24,7 +24,7 @@ const client = new QueryClient()
 
 export function EvmProvider({ children }: { children: ReactNode }) {
 	return (
-		<WagmiProvider config={config}>
+		<WagmiProvider config={config} reconnectOnMount={false}>
 			<QueryClientProvider client={client}>{children}</QueryClientProvider>
 		</WagmiProvider>
 	)
