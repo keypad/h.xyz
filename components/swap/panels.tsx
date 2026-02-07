@@ -67,10 +67,10 @@ export function ReceivePanel({
 					<div className="h-8 w-32 animate-pulse rounded-lg bg-white/[0.06] md:h-9" />
 				) : (
 					<span
-					className={`text-2xl font-medium md:text-3xl ${quote ? "text-white" : "text-white/15"}`}
-				>
-					{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "0"}
-				</span>
+						className={`text-2xl font-medium md:text-3xl ${quote ? "text-white" : "text-white/15"}`}
+					>
+						{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "0"}
+					</span>
 				)}
 				<Selector token={token} tokens={tokens} onSelect={onSelect} exclude={exclude} />
 			</div>
@@ -122,8 +122,7 @@ export function FlipButton({ flipped, onFlip }: { flipped: boolean; onFlip: () =
 			<button
 				type="button"
 				onClick={onFlip}
-				className="absolute -top-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.06] bg-[#1e1c1a] text-white/30 transition-all duration-200 hover:scale-110 hover:text-white/50 active:scale-95"
-				style={{ transform: flipped ? "rotate(180deg)" : "rotate(0deg)" }}
+				className="absolute -top-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.06] bg-[#1e1c1a] text-white/30 transition-all duration-200 hover:text-white/50 active:scale-95"
 			>
 				<svg
 					aria-hidden="true"
@@ -133,6 +132,8 @@ export function FlipButton({ flipped, onFlip }: { flipped: boolean; onFlip: () =
 					fill="none"
 					stroke="currentColor"
 					strokeWidth="2"
+					className="transition-transform duration-200"
+					style={{ transform: flipped ? "rotate(180deg)" : "none" }}
 				>
 					<path d="M12 5v14m0 0l-4-4m4 4l4-4" />
 				</svg>
