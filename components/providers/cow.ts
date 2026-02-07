@@ -2,8 +2,8 @@ import type { ProviderModule, Quote, SwapToken } from "./types"
 
 const CHAINS: Record<number, string> = {
 	1: "mainnet",
-	100: "gnosis",
-	42161: "arbitrum",
+	100: "xdai",
+	42161: "arbitrum_one",
 	8453: "base",
 }
 
@@ -80,23 +80,26 @@ export const cow: ProviderModule = {
 		if (sellAmount === "0") return null
 
 		const sellToken =
-			input.symbol === "ETH" ? "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" : input.address
+			input.symbol === "ETH" ? "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" : input.address
 		const buyToken =
-			output.symbol === "ETH" ? "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" : output.address
+			output.symbol === "ETH" ? "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" : output.address
+
+		const body: Record<string, any> = {
+			sellToken,
+			buyToken,
+			sellAmountBeforeFee: sellAmount,
+			kind: "sell",
+			validFor: 1800,
+		}
+		if (sender) {
+			body.from = sender
+			body.receiver = sender
+		}
 
 		const res = await fetch(`${API}/${chain}/api/v1/quote`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				sellToken,
-				buyToken,
-				sellAmountBeforeFee: sellAmount,
-				kind: "sell",
-				from: sender || "0x0000000000000000000000000000000000000000",
-				receiver: sender || "0x0000000000000000000000000000000000000000",
-				validTo: Math.floor(Date.now() / 1000) + 600,
-				appData: "0x0000000000000000000000000000000000000000000000000000000000000000",
-			}),
+			body: JSON.stringify(body),
 		})
 
 		if (!res.ok) return null
