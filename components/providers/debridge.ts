@@ -11,6 +11,11 @@ const CHAINS = [
 	{ id: 7565164, name: "solana" },
 ]
 
+const TW = "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets"
+const WETH_LOGO = `${TW}/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png`
+const USDC_LOGO = `${TW}/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png`
+const USDT_LOGO = `${TW}/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png`
+
 const TOKENS: SwapToken[] = [
 	{
 		address: "0x0000000000000000000000000000000000000000",
@@ -18,6 +23,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 18,
 		name: "ETH (ethereum)",
 		chainId: 1,
+		logo: WETH_LOGO,
 	},
 	{
 		address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
@@ -25,6 +31,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 6,
 		name: "USDC (arbitrum)",
 		chainId: 42161,
+		logo: USDC_LOGO,
 	},
 	{
 		address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -32,6 +39,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 6,
 		name: "USDC (ethereum)",
 		chainId: 1,
+		logo: USDC_LOGO,
 	},
 	{
 		address: "0x0000000000000000000000000000000000000000",
@@ -39,6 +47,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 18,
 		name: "ETH (arbitrum)",
 		chainId: 42161,
+		logo: WETH_LOGO,
 	},
 	{
 		address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
@@ -46,6 +55,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 6,
 		name: "USDT (ethereum)",
 		chainId: 1,
+		logo: USDT_LOGO,
 	},
 	{
 		address: "0x0000000000000000000000000000000000000000",
@@ -53,6 +63,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 18,
 		name: "ETH (base)",
 		chainId: 8453,
+		logo: WETH_LOGO,
 	},
 	{
 		address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -60,6 +71,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 6,
 		name: "USDC (base)",
 		chainId: 8453,
+		logo: USDC_LOGO,
 	},
 	{
 		address: "0x0000000000000000000000000000000000000000",
@@ -67,6 +79,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 18,
 		name: "ETH (optimism)",
 		chainId: 10,
+		logo: WETH_LOGO,
 	},
 	{
 		address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
@@ -74,6 +87,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 6,
 		name: "USDC (optimism)",
 		chainId: 10,
+		logo: USDC_LOGO,
 	},
 	{
 		address: "0x0000000000000000000000000000000000000000",
@@ -95,6 +109,7 @@ const TOKENS: SwapToken[] = [
 		decimals: 6,
 		name: "USDC (polygon)",
 		chainId: 137,
+		logo: USDC_LOGO,
 	},
 ]
 
