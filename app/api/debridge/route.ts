@@ -15,14 +15,21 @@ export async function GET(req: Request) {
 
 	if (REFERRAL) params.set("referralCode", REFERRAL)
 
-	const upstream = await fetch(`${BASE}/dln/order/create-tx?${params}`, {
-		cache: "no-store",
-	})
+	try {
+		const upstream = await fetch(`${BASE}/dln/order/create-tx?${params}`, {
+			cache: "no-store",
+		})
 
-	const data = await upstream.json()
+		if (!upstream.headers.get("content-type")?.includes("json")) {
+			return NextResponse.json({ error: "upstream" }, { status: upstream.status || 502 })
+		}
 
-	const response = NextResponse.json(data, { status: upstream.status })
-	response.headers.set("Cache-Control", "no-store")
-	for (const h of STRIP) response.headers.delete(h)
-	return response
+		const data = await upstream.json()
+		const response = NextResponse.json(data, { status: upstream.status })
+		response.headers.set("Cache-Control", "no-store")
+		for (const h of STRIP) response.headers.delete(h)
+		return response
+	} catch {
+		return NextResponse.json({ error: "upstream failed" }, { status: 502 })
+	}
 }
