@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useEmail } from "@/components/email/context"
 import { CloseIcon, LockIcon, SendIcon } from "@/components/email/icons"
 
@@ -9,6 +9,12 @@ export default function Compose() {
 	const [to, setTo] = useState("")
 	const [subject, setSubject] = useState("")
 	const [body, setBody] = useState("")
+
+	const toRef = useRef<HTMLInputElement>(null)
+
+	useEffect(() => {
+		if (composing) setTimeout(() => toRef.current?.focus(), 50)
+	}, [composing])
 
 	if (!composing) return null
 
@@ -41,6 +47,7 @@ export default function Compose() {
 					<div className="flex items-center border-b border-white/[0.04] px-5 py-2.5">
 						<span className="w-12 text-[12px] text-white/20">to</span>
 						<input
+							ref={toRef}
 							type="text"
 							value={to}
 							onChange={(e) => setTo(e.target.value)}
