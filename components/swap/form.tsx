@@ -24,12 +24,14 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	const [result, setResult] = useState<SwapResult | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [flipped, setFlipped] = useState(false)
+	const [destination, setDestination] = useState("")
 	const timer = useRef<ReturnType<typeof setTimeout>>(null)
 	const refreshKey = useRef(0)
 	const mounted = useRef(false)
 	const abort = useRef<AbortController | null>(null)
 	const { connected, address, signer, chain } = useWalletContext()
 	const { slippage, setSlippage } = useSlippage()
+	const isHoudini = providerId === "houdini"
 
 	useEffect(() => {
 		setInput(tokenList[0])
@@ -56,13 +58,9 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 		}
 		setLoading(true)
 		try {
+			const sender = isHoudini ? destination || undefined : (address ?? undefined)
 			const q = await withRetry(
-				(s) =>
-					withTimeout(
-						mod.quote({ input, output, amount, sender: address ?? undefined, slippage }),
-						10000,
-						s,
-					),
+				(s) => withTimeout(mod.quote({ input, output, amount, sender, slippage }), 10000, s),
 				signal,
 			)
 			if (signal.aborted) return
@@ -77,16 +75,14 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 			setError(classify(e))
 		}
 		setLoading(false)
-	}, [mod, input, output, amount, address, slippage])
+	}, [mod, input, output, amount, address, slippage, isHoudini, destination])
 
 	useEffect(() => {
 		if (timer.current) clearTimeout(timer.current)
 		if (!mounted.current) {
 			mounted.current = true
 			fetchQuote()
-		} else {
-			timer.current = setTimeout(fetchQuote, 200)
-		}
+		} else timer.current = setTimeout(fetchQuote, 200)
 		return () => {
 			if (timer.current) clearTimeout(timer.current)
 		}
@@ -107,18 +103,15 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	}
 
 	const execute = async () => {
-		if (!quote || !connected || !signer || !address) return
+		const sender = isHoudini ? destination : address
+		if (!quote || !sender || (!isHoudini && (!connected || !signer))) return
 		setResult({ status: "pending" })
 		try {
-			const res = await mod.swap({ quote, sender: address, signer, slippage })
-			setResult(res)
+			setResult(await mod.swap({ quote, sender, signer, slippage }))
 		} catch (e: any) {
 			const msg = (e?.message ?? "").toLowerCase()
-			if (msg.includes("reject") || msg.includes("denied") || msg.includes("cancel")) {
-				setResult(null)
-			} else {
-				setResult({ status: "error", message: "failed" })
-			}
+			const rejected = msg.includes("reject") || msg.includes("denied") || msg.includes("cancel")
+			setResult(rejected ? null : { status: "error", message: "failed" })
 		}
 	}
 
@@ -183,7 +176,17 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 					/>
 				)}
 			</div>
-			{connected ? (
+			{isHoudini && !destination ? (
+				<input
+					type="text"
+					value={destination}
+					onChange={(e) => setDestination(e.target.value.trim())}
+					placeholder="destination address"
+					className="mt-4 w-full rounded-xl bg-white/[0.06] px-4 py-3.5 text-sm text-white outline-none placeholder:text-white/25 md:py-4"
+				/>
+			) : !isHoudini && !connected ? (
+				<ConnectButton />
+			) : (
 				<button
 					type="button"
 					disabled={!quote || !!buttonError}
@@ -196,8 +199,6 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 				>
 					{buttonError || "swap"}
 				</button>
-			) : (
-				<ConnectButton />
 			)}
 		</div>
 	)
