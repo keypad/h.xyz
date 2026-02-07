@@ -110,6 +110,14 @@ const TOKENS: SwapToken[] = [
 		logo: `${TW}/0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32/logo.png`,
 	},
 	{
+		address: "0xD33526068D116cE69F19A9ee46F0bd304F21A51f",
+		symbol: "RPL",
+		decimals: 18,
+		name: "Rocket Pool",
+		chainId: 1,
+		logo: `${TW}/0xD33526068D116cE69F19A9ee46F0bd304F21A51f/logo.png`,
+	},
+	{
 		address: "0xD533a949740bb3306d119CC777fa900bA034cd52",
 		symbol: "CRV",
 		decimals: 18,
