@@ -65,9 +65,11 @@ export function ReceivePanel({
 				{loading ? (
 					<div className="h-8 w-32 animate-pulse rounded-lg bg-white/[0.06] md:h-9" />
 				) : (
-					<span className="text-2xl font-medium text-white md:text-3xl">
-						{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "\u2014"}
-					</span>
+					<span
+					className={`text-2xl font-medium md:text-3xl ${quote ? "text-white" : "text-white/15"}`}
+				>
+					{quote ? fmt(Number.parseFloat(quote.outputAmount)) : "0"}
+				</span>
 				)}
 				<Selector token={token} tokens={tokens} onSelect={onSelect} exclude={exclude} />
 			</div>
