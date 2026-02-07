@@ -20,9 +20,9 @@ export default function Header() {
 	}, [])
 
 	return (
-		<header className="fixed top-0 right-0 left-0 z-50 px-6">
+		<header className="fixed top-0 right-0 left-0 z-50 px-4 md:px-6">
 			<nav
-				className={`mx-auto flex max-w-6xl items-center border-b border-white/5 py-5 transition-colors duration-500 ${
+				className={`mx-auto flex max-w-6xl items-center border-b border-white/5 py-4 transition-colors duration-500 md:py-5 ${
 					scrolled ? "bg-[#1a1816]/80 backdrop-blur-xl" : ""
 				}`}
 			>
@@ -34,7 +34,7 @@ export default function Header() {
 					<Link
 						key={link.label}
 						href={link.href}
-						className="flex items-center gap-2 px-4 py-2 text-sm text-white/50 transition-colors hover:text-white"
+						className="hidden items-center gap-2 px-4 py-2 text-sm text-white/50 transition-colors hover:text-white md:flex"
 					>
 						<span className="h-1.5 w-1.5 rounded-full" style={{ background: link.color }} />
 						{link.label}
@@ -42,7 +42,7 @@ export default function Header() {
 				))}
 				<Link
 					href="/swap"
-					className="ml-2 rounded-full bg-white px-5 py-2 text-sm font-medium text-fg transition-opacity hover:opacity-90"
+					className="rounded-full bg-white px-4 py-2 text-sm font-medium text-fg transition-opacity hover:opacity-90 md:ml-2 md:px-5"
 				>
 					launch app
 				</Link>
