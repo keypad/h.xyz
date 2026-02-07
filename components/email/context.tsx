@@ -3,13 +3,13 @@
 import { createContext, type ReactNode, useContext, useMemo, useState } from "react"
 import { type Email, emails as initial } from "@/components/email/data"
 
-type Reply = { to: string; subject: string } | null
+type Draft = { to: string; subject: string; body: string } | null
 
 type State = {
 	folder: string
 	selected: number | null
 	composing: boolean
-	replyTo: Reply
+	draft: Draft
 	search: string
 	mobile: boolean
 	emails: Email[]
@@ -18,6 +18,7 @@ type State = {
 	send: (to: string, subject: string, body: string) => void
 	trash: (id: number) => void
 	reply: (id: number) => void
+	forward: (id: number) => void
 	setFolder: (id: string) => void
 	setSelected: (id: number | null) => void
 	setComposing: (v: boolean) => void
@@ -36,11 +37,11 @@ export function Provider({ children }: { children: ReactNode }) {
 	const [search, setSearch] = useState("")
 	const [mobile, setMobile] = useState(false)
 	const [emails, setEmails] = useState(initial)
-	const [replyTo, setReplyTo] = useState<Reply>(null)
+	const [draft, setDraft] = useState<Draft>(null)
 
 	const setComposing = (v: boolean) => {
 		rawSetComposing(v)
-		if (!v) setReplyTo(null)
+		if (!v) setDraft(null)
 	}
 
 	const markRead = (id: number) =>
@@ -80,7 +81,16 @@ export function Provider({ children }: { children: ReactNode }) {
 		const email = emails.find((e) => e.id === id)
 		if (!email) return
 		const sub = email.subject.startsWith("re: ") ? email.subject : `re: ${email.subject}`
-		setReplyTo({ to: email.from, subject: sub })
+		setDraft({ to: email.from, subject: sub, body: "" })
+		setComposing(true)
+	}
+
+	const forward = (id: number) => {
+		const email = emails.find((e) => e.id === id)
+		if (!email) return
+		const sub = email.subject.startsWith("fwd: ") ? email.subject : `fwd: ${email.subject}`
+		const fwd = `\n\n--- forwarded ---\nfrom: ${email.from}\ndate: ${email.date}\n\n${email.body}`
+		setDraft({ to: "", subject: sub, body: fwd })
 		setComposing(true)
 	}
 
@@ -118,7 +128,7 @@ export function Provider({ children }: { children: ReactNode }) {
 				folder,
 				selected,
 				composing,
-				replyTo,
+				draft,
 				search,
 				mobile,
 				emails,
@@ -127,6 +137,7 @@ export function Provider({ children }: { children: ReactNode }) {
 				send,
 				trash,
 				reply,
+				forward,
 				setFolder,
 				setSelected,
 				setComposing,

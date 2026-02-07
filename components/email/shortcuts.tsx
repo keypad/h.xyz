@@ -4,8 +4,9 @@ import { useEffect } from "react"
 import { useEmail } from "@/components/email/context"
 
 export function useShortcuts() {
-	const { selected, setSelected, setComposing, composing, navigate, filtered, mobile, toggleStar, trash, reply } =
-		useEmail()
+	const {
+		selected, setSelected, setComposing, composing, navigate, filtered, mobile, toggleStar, trash, reply, forward,
+	} = useEmail()
 
 	useEffect(() => {
 		const handler = (e: KeyboardEvent) => {
@@ -44,6 +45,12 @@ export function useShortcuts() {
 				case "s":
 					if (selected) toggleStar(selected)
 					break
+				case "f":
+					if (selected) {
+						e.preventDefault()
+						forward(selected)
+					}
+					break
 				case "d":
 					if (selected) {
 						trash(selected)
@@ -55,5 +62,5 @@ export function useShortcuts() {
 
 		window.addEventListener("keydown", handler)
 		return () => window.removeEventListener("keydown", handler)
-	}, [selected, composing, navigate, setSelected, setComposing, filtered, mobile, toggleStar, trash, reply])
+	}, [selected, composing, navigate, setSelected, setComposing, filtered, mobile, toggleStar, trash, reply, forward])
 }
