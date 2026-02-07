@@ -17,8 +17,15 @@ export default function ConnectButton() {
 		function close(e: MouseEvent) {
 			if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
 		}
+		function keys(e: KeyboardEvent) {
+			if (e.key === "Escape") setOpen(false)
+		}
 		document.addEventListener("mousedown", close)
-		return () => document.removeEventListener("mousedown", close)
+		document.addEventListener("keydown", keys)
+		return () => {
+			document.removeEventListener("mousedown", close)
+			document.removeEventListener("keydown", keys)
+		}
 	}, [open])
 
 	useEffect(() => {
@@ -64,7 +71,10 @@ export default function ConnectButton() {
 				connect wallet
 			</button>
 			{open && (
-				<div className="absolute top-full left-0 z-50 mt-2 w-full rounded-xl border border-white/[0.06] bg-[#2a2826] p-1.5">
+				<div
+					className="absolute top-full left-0 z-50 mt-2 w-full rounded-xl border border-white/[0.06] bg-[#2a2826] p-1.5"
+					style={{ animation: "slideup 150ms ease-out" }}
+				>
 					{items.length === 0 && (
 						<p className="px-3 py-2 text-xs text-white/30">no wallets detected</p>
 					)}
