@@ -1,7 +1,6 @@
 "use client"
 
 import { useWallet } from "@solana/wallet-adapter-react"
-import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 import { useConnect } from "wagmi"
 import { useWalletContext } from "./context"
@@ -80,7 +79,7 @@ export default function ConnectButton() {
 							className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-white/70 transition-colors hover:bg-white/[0.06] hover:text-white"
 						>
 							{w.icon && (
-								<Image src={w.icon} alt="" width={20} height={20} className="rounded" unoptimized />
+								<img src={w.icon.trim()} alt="" width={20} height={20} className="rounded" />
 							)}
 							{w.name}
 						</button>
