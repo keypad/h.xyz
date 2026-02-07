@@ -12,6 +12,7 @@ import { FlipButton, PayPanel, ReceivePanel, SwapButton } from "./panels"
 import Refresh from "./refresh"
 import Settings, { useSlippage } from "./settings"
 import Status from "./status"
+import Wallet from "./wallet"
 
 export default function SwapForm({ providerId, chainId }: { providerId: string; chainId: number }) {
 	const mod = modules[providerId]
@@ -110,14 +111,11 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 	}
 
 	const prov = providers.find((p) => p.id === providerId)
-	const submit = (e: React.KeyboardEvent) => {
-		if (e.key === "Enter" && !e.repeat) execute()
-	}
 
 	return (
 		<div
 			className="relative rounded-2xl border border-white/[0.06] bg-[#1e1c1a] p-4 md:p-5"
-			onKeyDown={submit}
+			onKeyDown={(e) => e.key === "Enter" && !e.repeat && execute()}
 		>
 			<Status result={result} onClose={() => setResult(null)} />
 			<div className="mb-3 flex items-center justify-between px-1">
@@ -190,7 +188,8 @@ export default function SwapForm({ providerId, chainId }: { providerId: string; 
 			) : !connected ? (
 				<ConnectButton />
 			) : (
-				<div className="mt-4">
+				<div className="mt-4 flex flex-col gap-2">
+					<Wallet />
 					<SwapButton disabled={!quote} error={error} onClick={execute} />
 				</div>
 			)}
