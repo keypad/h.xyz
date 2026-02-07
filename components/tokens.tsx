@@ -38,6 +38,16 @@ export const tokens: Token[] = [
 ]
 
 export function TokenLogo({ token }: { token: Token }) {
+	if (!token.logo) {
+		return (
+			<span
+				className="flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-bold text-white"
+				style={{ background: token.color }}
+			>
+				{token.symbol[0]}
+			</span>
+		)
+	}
 	return (
 		<Image
 			src={token.logo}
