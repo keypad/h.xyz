@@ -55,6 +55,7 @@ export type ProviderModule = {
 		chainId?: number | string
 		destChainId?: number | string
 		sender?: string
+		slippage?: number
 	}) => Promise<Quote | null>
-	swap: (params: { quote: Quote; sender: string; signer: any }) => Promise<SwapResult>
+	swap: (params: { quote: Quote; sender: string; signer: any; slippage?: number }) => Promise<SwapResult>
 }
