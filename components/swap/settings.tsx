@@ -13,7 +13,10 @@ export function useSlippage() {
 export default function Settings({
 	slippage,
 	onChange,
-}: { slippage: number; onChange: (v: number) => void }) {
+}: {
+	slippage: number
+	onChange: (v: number) => void
+}) {
 	const [open, setOpen] = useState(false)
 	const [custom, setCustom] = useState("")
 	const ref = useRef<HTMLDivElement>(null)
@@ -25,14 +28,14 @@ export default function Settings({
 		const handler = (e: MouseEvent) => {
 			if (ref.current && !ref.current.contains(e.target as Node)) close()
 		}
-		const escape = (e: KeyboardEvent) => {
+		const keys = (e: KeyboardEvent) => {
 			if (e.key === "Escape") close()
 		}
 		document.addEventListener("mousedown", handler)
-		document.addEventListener("keydown", escape)
+		document.addEventListener("keydown", keys)
 		return () => {
 			document.removeEventListener("mousedown", handler)
-			document.removeEventListener("keydown", escape)
+			document.removeEventListener("keydown", keys)
 		}
 	}, [open, close])
 

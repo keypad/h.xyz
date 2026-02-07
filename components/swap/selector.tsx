@@ -75,11 +75,10 @@ function Modal({
 			className="fixed inset-0 z-50 flex items-end justify-center md:items-start md:pt-[10vh]"
 			style={{ animation: "fadein 200ms ease-out" }}
 		>
-			<div
+			<button
+				type="button"
 				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
 				onClick={onClose}
-				onKeyDown={(e) => e.key === "Escape" && onClose()}
-				role="button"
 				tabIndex={-1}
 			/>
 			<div
