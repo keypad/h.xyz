@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useWalletContext } from "../wallet/context"
 
 function truncate(addr: string) {
@@ -8,11 +9,24 @@ function truncate(addr: string) {
 
 export default function Wallet() {
 	const { address, disconnect } = useWalletContext()
+	const [copied, setCopied] = useState(false)
 	if (!address) return null
+
+	const copy = () => {
+		navigator.clipboard.writeText(address)
+		setCopied(true)
+		setTimeout(() => setCopied(false), 1500)
+	}
 
 	return (
 		<div className="flex items-center justify-between">
-			<span className="font-mono text-[11px] text-white/30">{truncate(address)}</span>
+			<button
+				type="button"
+				onClick={copy}
+				className="font-mono text-[11px] text-white/30 transition-colors hover:text-white/50"
+			>
+				{copied ? "copied" : truncate(address)}
+			</button>
 			<button
 				type="button"
 				onClick={disconnect}
