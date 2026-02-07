@@ -48,6 +48,7 @@ export default function Compose() {
 			<div
 				className="relative flex w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-[#1e1c1a] shadow-2xl animate-[slideup_250ms_ease-out]"
 				onKeyDown={(e) => {
+					if (e.key === "Escape") close()
 					if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && to.trim()) doSend()
 				}}
 			>
