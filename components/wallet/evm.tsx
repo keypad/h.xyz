@@ -2,19 +2,17 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import type { ReactNode } from "react"
-import { createConfig, http, WagmiProvider } from "wagmi"
-import { arbitrum, base, mainnet, optimism, polygon } from "wagmi/chains"
-import { coinbaseWallet, injected, walletConnect } from "wagmi/connectors"
+import { createConfig, createStorage, http, noopStorage, WagmiProvider } from "wagmi"
+import { arbitrum, base, gnosis, mainnet, optimism, polygon } from "wagmi/chains"
+import { coinbaseWallet, injected } from "wagmi/connectors"
 
 const config = createConfig({
-	chains: [mainnet, arbitrum, polygon, base, optimism],
-	connectors: [
-		injected(),
-		walletConnect({ projectId: "00000000000000000000000000000000" }),
-		coinbaseWallet({ appName: "h.xyz" }),
-	],
+	chains: [mainnet, gnosis, arbitrum, polygon, base, optimism],
+	connectors: [injected(), coinbaseWallet({ appName: "h.xyz" })],
+	storage: createStorage({ storage: noopStorage }),
 	transports: {
 		[mainnet.id]: http(),
+		[gnosis.id]: http(),
 		[arbitrum.id]: http(),
 		[polygon.id]: http(),
 		[base.id]: http(),

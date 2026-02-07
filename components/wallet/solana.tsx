@@ -12,7 +12,7 @@ export function SolanaProvider({ children }: { children: ReactNode }) {
 
 	return (
 		<ConnectionProvider endpoint={ENDPOINT}>
-			<WalletProvider wallets={wallets} autoConnect>
+			<WalletProvider wallets={wallets}>
 				{children}
 			</WalletProvider>
 		</ConnectionProvider>
